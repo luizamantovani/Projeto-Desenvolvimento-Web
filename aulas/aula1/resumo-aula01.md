@@ -10,7 +10,7 @@ A atividade 1 se baseia em:
 4. Criar uma representação visual de uma análise de 3 sites escolhidos e as ferramentas utilizadas para a construção deles.
 
 **Parte 1:**
-O grupo criado possui 4 integrantes, sendo eles: Gabriel da Silva Rodrigues, João Vitor Martinelle, Isabella Valim e Luiza Mantovani.
+O grupo criado possui 3 integrantes, sendo eles: Gabriel da Silva Rodrigues, João Vitor Martinelle e Luiza Mantovani.
 
 **Parte 2:**
 Tiveram duas ideias discutidas, um site a respeito de livros e um sobre cronograma de estudos. A ideia escolhida foi o cronograma de estudos.
