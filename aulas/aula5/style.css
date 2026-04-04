@@ -472,3 +472,23 @@ a {
 .social-links a:hover {
     color: var(--primary);
 }
+
+.image-section {
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.image-section img {
+    width: 100%;
+    max-width: 900px; /* limita o tamanho máximo */
+    height: auto;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 768px) {
+    .image-section img {
+        max-width: 100%;
+    }
+}
