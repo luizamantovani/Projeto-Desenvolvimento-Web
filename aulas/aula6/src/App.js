@@ -1,6 +1,10 @@
 import './App.css';
 import { useState } from 'react';
 import Header from './components/header';
+import ToDoList from './pages/ToDoList/ToDoList';
+import ContadorDeCliques from './pages/ContadorDeCliques/ContadorDeCliques';
+import JogoDaVelha from './pages/JogoDaVelha/JogoDaVelha';
+import FormularioCEP from './pages/FormularioCEP/FormularioCEP';
 
 
 function App() {
@@ -17,6 +21,24 @@ function App() {
         setMostrarResultado={setMostrarResultado}
       />
 
+      <main className="App-main">
+        {mostrarResultado.ToDoList && (
+          <ToDoList />
+
+        )}
+
+        {mostrarResultado.ContadorDeCliques && (
+          <ContadorDeCliques />
+        )}
+
+        {mostrarResultado.JogoDaVelha && (
+          <JogoDaVelha />
+        )}
+
+        {mostrarResultado.FormularioCEP && (
+          <FormularioCEP />
+        )}
+      </main>
     </div>
   );
 }
