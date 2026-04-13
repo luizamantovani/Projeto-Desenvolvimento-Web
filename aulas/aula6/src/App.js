@@ -5,6 +5,7 @@ import ToDoList from './pages/ToDoList/ToDoList';
 import ContadorDeCliques from './pages/ContadorDeCliques/ContadorDeCliques';
 import JogoDaVelha from './pages/JogoDaVelha/JogoDaVelha';
 import FormularioCEP from './pages/FormularioCEP/FormularioCEP';
+import Calculadora from './pages/Calculadora/Calculadora';
 
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
     ToDoList: false,
     ContadorDeCliques: false,
     JogoDaVelha: false,
-    FormularioCEP: false
+    FormularioCEP: false,
+    Calculadora: false,
   });
   return (
     <div className="App">
@@ -37,6 +39,10 @@ function App() {
 
         {mostrarResultado.FormularioCEP && (
           <FormularioCEP />
+        )}
+
+        {mostrarResultado.Calculadora && (
+          <Calculadora />
         )}
       </main>
     </div>

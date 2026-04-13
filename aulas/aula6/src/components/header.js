@@ -1,5 +1,6 @@
 import '../App.css';
 
+
 function Header({ mostrarResultado, setMostrarResultado }) {
   return (
     <header className="App-header">
@@ -9,6 +10,7 @@ function Header({ mostrarResultado, setMostrarResultado }) {
         <a href="#contador" onClick={() => setMostrarResultado({ ...mostrarResultado, ContadorDeCliques: true, ToDoList: false, JogoDaVelha: false, FormularioCEP: false })}>Contador de Cliques</a>
         <a href="#jogo" onClick={() => setMostrarResultado({ ...mostrarResultado, JogoDaVelha: true, ToDoList: false, ContadorDeCliques: false, FormularioCEP: false })}>Jogo da Velha</a>
         <a href="#cep" onClick={() => setMostrarResultado({ ...mostrarResultado, FormularioCEP: true, ToDoList: false, ContadorDeCliques: false, JogoDaVelha: false })}>Buscador de CEPs</a>
+        <a href="#calculadora" onClick={() => setMostrarResultado({ ...mostrarResultado, Calculadora: true, ToDoList: false, ContadorDeCliques: false, JogoDaVelha: false, FormularioCEP: false })}>Calculadora</a>
       </nav>
     </header>
   );
