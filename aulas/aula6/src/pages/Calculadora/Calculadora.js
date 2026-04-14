@@ -6,15 +6,9 @@ export default function Calculadora() {
 
   const adicionarDigito = (digito) => {
     setValor((atual) => {
-      if (atual === 'Erro') {
-        return digito;
-      }
-      if (atual === '0' && digito !== '.') {
-        return digito;
-      }
-      if (digito === '.' && atual.includes('.')) {
-        return atual;
-      }
+      if (atual === 'Erro') return digito;
+      if (atual === '0' && digito !== '.') return digito;
+      if (digito === '.' && atual.includes('.')) return atual;
       return atual + digito;
     });
   };
@@ -33,19 +27,17 @@ export default function Calculadora() {
       );
 
       setValor(String(resultado));
-    } catch (erro) {
+    } catch {
       setValor('Erro');
     }
   };
 
   const adicionarOperador = (operador) => {
     setValor((atual) => {
-      if (atual === 'Erro') {
-        return '0';
-      }
+      if (atual === 'Erro') return '0';
 
       const ultimo = atual.slice(-1);
-      const operadores = ['+', '-', '×', '÷'];
+      const operadores = ['+', '-', 'x', '÷'];
 
       if (operadores.includes(ultimo)) {
         return atual.slice(0, -1) + operador;
@@ -56,41 +48,28 @@ export default function Calculadora() {
   };
 
   return (
-    <div style={{
-      maxWidth: 320,
-      margin: '40px auto',
-      padding: 20,
-      border: '1px solid #ccc',
-      borderRadius: 8,
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      <h2>Calculadora</h2>
+    <div className="container">
+      <h2 className="titulo">Calculadora</h2>
 
-      <div style={{
-        background: '#f5f5f5',
-        padding: 16,
-        borderRadius: 6,
-        marginBottom: 16,
-        fontSize: 32,
-        textAlign: 'right',
-        minHeight: 60
-      }}>
+      <div className="display">
         {valor}
       </div>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: 10
-      }}>
-        {['7', '8', '9', '÷',
+      <div className="botoes">
+        {[
+          '7', '8', '9', '÷',
           '4', '5', '6', 'x',
           '1', '2', '3', '-',
-          '0', '.', '=', '+'].map((item) => {
+          '0', '.', '=', '+'
+        ].map((item) => {
 
           if (item === '=') {
             return (
-              <button key={item} onClick={calcular} >
+              <button
+                key={item}
+                onClick={calcular}
+                className="botao"
+              >
                 {item}
               </button>
             );
@@ -101,10 +80,7 @@ export default function Calculadora() {
               <button
                 key={item}
                 onClick={() => adicionarOperador(item)}
-                style={{
-                  background: '#f0ad4e',
-                  color: '#fff'
-                }}
+                className="botao operador"
               >
                 {item}
               </button>
@@ -115,30 +91,17 @@ export default function Calculadora() {
             <button
               key={item}
               onClick={() => adicionarDigito(item)}
-              
+              className="botao"
             >
               {item}
             </button>
           );
         })}
 
-        <button
-          onClick={limpar}
-          style={{
-            gridColumn: 'span 4',
-            padding: '14px 0',
-            background: '#d9534f',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 6,
-            cursor: 'pointer',
-            fontSize: 18
-          }}
-        >
+        <button onClick={limpar} className="limpar">
           C
         </button>
       </div>
     </div>
   );
 }
-
