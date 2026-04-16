@@ -46,6 +46,7 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(token));
     }
 
+    @PostMapping("/registrar")
     public ResponseEntity<RegistrarUsuarioResponse> registrarUsuario(@Valid @RequestBody RegistroUsuarioRequest request) {
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNome(request.nome());
