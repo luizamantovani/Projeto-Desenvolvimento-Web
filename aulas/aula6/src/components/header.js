@@ -1,6 +1,4 @@
 import '../App.css';
-import Calculadora from '../pages/Calculadora/Calculadora';
-
 
 function Header({ mostrarResultado, setMostrarResultado }) {
   return (

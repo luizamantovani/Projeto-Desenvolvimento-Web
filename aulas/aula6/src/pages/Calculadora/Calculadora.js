@@ -20,6 +20,7 @@ export default function Calculadora() {
       const ultimo = valor.slice(-1);
       if (['+', '-', 'x', '÷'].includes(ultimo)) return;
 
+      // eslint-disable-next-line
       const resultado = eval(
         valor
           .replace(/x/g, '*')
