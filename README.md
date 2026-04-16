@@ -2,30 +2,30 @@
 
 ## 🧠 Visão Geral
 
-O **Agendo** é um aplicativo mobile desenvolvido para auxiliar estudantes na criação e gerenciamento de **cronogramas de estudo personalizados**.
+O **Agendo** é uma aplicação web desenvolvida para auxiliar estudantes na criação e gerenciamento de **cronogramas de estudo personalizados e inteligentes**.
 
 A principal proposta do sistema é resolver problemas comuns como:
-- Falta de organização nos estudos  
-- Dificuldade em distribuir matérias ao longo do tempo  
-- Esquecimento de tarefas ou conteúdos  
-- Baixa produtividade por falta de planejamento  
+- Falta de organização nos estudos.
+- Dificuldade em distribuir matérias com pesos diferentes ao longo do tempo.
+- Esquecimento de tarefas ou conteúdos.
+- Baixa produtividade por falta de planejamento.
 
-O Agendo gera automaticamente um cronograma com base nas preferências do usuário, ajudando a manter uma rotina eficiente e equilibrada.
+O Agendo utiliza um **Algoritmo de Pesos Dinâmicos** para gerar automaticamente um cronograma com base nas preferências, dificuldade e importância de cada matéria, ajudando a manter uma rotina de estudos eficiente, intercalada e equilibrada.
 
 ---
 
-## 🏗️ Arquitetura
+## 🏗️ Arquitetura (Monorepo)
 
-O projeto segue uma arquitetura em camadas com separação entre frontend, backend e persistência de dados:
+O projeto segue uma arquitetura em camadas com separação clara entre o cliente, a API e a persistência de dados:
 
-```
-[ React Native (Frontend) ]
-            ↓
-      [ API REST ]
+```text
+[ React + Vite (Frontend Web) ]
+            ↓ (JSON / JWT)
+      [ API RESTful ]
             ↓
 [ Spring Boot (Backend) ]
             ↓
-     [ Banco de Dados ]
+   [ PostgreSQL (DB) ]
 ```
 
 ### 🔹 Frontend
@@ -46,12 +46,14 @@ O projeto segue uma arquitetura em camadas com separação entre frontend, backe
 ## 🗂️ Dicionário de Dados
 
 ### 👤 Usuário
-| Campo        | Tipo     | Descrição            |
-|--------------|----------|----------------------|
-| id           | Long     | Identificador único  |
-| nome         | String   | Nome do usuário      |
-| email        | String   | Email de login       |
-| senha        | String   | Senha criptografada  |
+| Campo        | Tipo      | Descrição            |
+|--------------|-----------|----------------------|
+| id           | Long      | Identificador único  |
+| nome         | String    | Nome do usuário      |
+| email        | String    | Email de login       |
+| senha        | String    | Senha criptografada  |
+| role         | String    | Nivel de acesso      |
+| created_at   | Timestamp | Data de criação      |
 
 ---
 
@@ -60,6 +62,9 @@ O projeto segue uma arquitetura em camadas com separação entre frontend, backe
 |--------------|----------|-----------------------------|
 | id           | Long     | Identificador único         |
 | nome         | String   | Nome da matéria             |
+| dificuldade  | Integer  | Nível de dificuldade (1-5)  |
+| importância  | Integer  | Peso da matéria (1-5)       |
+| cor_rex      | String   | Código hex da cor da tarefa |
 | dificuldade  | Integer  | Nível de dificuldade (1-5)  |
 | usuario_id   | Long     | Relação com o usuário       |
 
@@ -70,8 +75,11 @@ O projeto segue uma arquitetura em camadas com separação entre frontend, backe
 |--------------|----------|-----------------------------|
 | id           | Long     | Identificador único         |
 | data         | Date     | Data do estudo              |
+| hora_inicio  | Time     | Horário de inicio do bloco  |
+| hora_fim     | Time     | Horário de fim do bloco     |
+| status       | Long     | Identificador único         |
+| concluido    | Boolean  | Flag rápida de progresso    |
 | materia_id   | Long     | Matéria associada           |
-| duracao      | Integer  | Tempo de estudo (minutos)   |
 | usuario_id   | Long     | Dono do cronograma          |
 
 ---
@@ -79,12 +87,14 @@ O projeto segue uma arquitetura em camadas com separação entre frontend, backe
 ## ⚙️ Stack Tecnológica
 
 ### 📱 Frontend
-- React Native
-- Expo 
+- React
+- Vite
+- Tailwind CSS 
 
 ### 🔙 Backend
-- Java 17+
+- Java 21
 - Spring Boot 3+
+- Spring Security
 - Maven
 
 ### 🗄️ Banco de Dados
@@ -96,16 +106,16 @@ O projeto segue uma arquitetura em camadas com separação entre frontend, backe
 
 ### 🔧 Pré-requisitos
 - Node.js instalado
-- Java JDK 17+
+- Java JDK 21
 - Maven
 - Git
-- Banco de dados configurado
+- PostgresSQL rodando localmente
 
 ---
 
 ### 📥 Clonar o repositório
 ```bash
-git clone https://github.com/seu-usuario/agendo.git
+git clone [https://github.com/seu-usuario/agendo.git](https://github.com/luizamantovani/Projeto-Desenvolvimento-Web)
 cd agendo
 ```
 
@@ -142,7 +152,7 @@ npx expo start
 
 ## 📌 Melhorias Futuras
 
-- Notificações de estudo  
-- Integração com calendário (Google Calendar)  
-- Sistema de metas e desempenho  
-- IA para sugestão de horários ideais  
+[ ] Envio de notificações e resumo do cronograma por E-mail.
+[ ] Integração com o Google Calendar.
+[ ] Timer Pomodoro integrado aos blocos de estudo.
+[ ] IA (LLM) para analisar o cronograma gerado e fornecer mensagens de motivação pedagógica. 
