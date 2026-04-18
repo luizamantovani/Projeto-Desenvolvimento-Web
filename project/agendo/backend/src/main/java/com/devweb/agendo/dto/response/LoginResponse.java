@@ -1,4 +1,4 @@
 package com.devweb.agendo.dto.response;
 
-public record LoginResponse(String nome) {
+public record LoginResponse(String token) {
 }
