@@ -34,8 +34,6 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
-    private String role = "ROLE_USER";
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -44,7 +42,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role));
+        return List.of();
     }
 
     @Override
