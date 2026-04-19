@@ -5,6 +5,7 @@ import com.devweb.agendo.dto.request.LoginRequest;
 import com.devweb.agendo.dto.request.RegistroUsuarioRequest;
 import com.devweb.agendo.dto.response.LoginResponse;
 import com.devweb.agendo.dto.response.RegistrarUsuarioResponse;
+import com.devweb.agendo.dto.response.UsuarioLoginResponse;
 import com.devweb.agendo.model.Usuario;
 import com.devweb.agendo.repository.UsuarioRepository;
 import jakarta.validation.Valid;
@@ -42,7 +43,8 @@ public class AuthController {
         Usuario usuario = (Usuario) authentication.getPrincipal();
         String token = tokenConfig.generateToken(usuario);
 
-        return ResponseEntity.ok(new LoginResponse(token));
+        UsuarioLoginResponse usuarioLoginResponse = new UsuarioLoginResponse(usuario.getId(), usuario.getNome(), usuario.getEmail());
+        return ResponseEntity.ok(new LoginResponse(token,  usuarioLoginResponse));
 
 //        ResponseCookie cookie = ResponseCookie.from("token", token)
 //                .httpOnly(true)
