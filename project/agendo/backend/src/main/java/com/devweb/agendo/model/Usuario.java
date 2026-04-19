@@ -1,12 +1,10 @@
 package com.devweb.agendo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -34,8 +32,6 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
-    private String role = "ROLE_USER";
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -44,7 +40,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role));
+        return List.of();
     }
 
     @Override

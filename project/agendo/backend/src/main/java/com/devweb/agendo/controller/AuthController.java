@@ -5,19 +5,19 @@ import com.devweb.agendo.dto.request.LoginRequest;
 import com.devweb.agendo.dto.request.RegistroUsuarioRequest;
 import com.devweb.agendo.dto.response.LoginResponse;
 import com.devweb.agendo.dto.response.RegistrarUsuarioResponse;
+import com.devweb.agendo.dto.response.UsuarioLoginResponse;
 import com.devweb.agendo.model.Usuario;
 import com.devweb.agendo.repository.UsuarioRepository;
 import jakarta.validation.Valid;
+//import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -43,7 +43,20 @@ public class AuthController {
         Usuario usuario = (Usuario) authentication.getPrincipal();
         String token = tokenConfig.generateToken(usuario);
 
-        return ResponseEntity.ok(new LoginResponse(token));
+        UsuarioLoginResponse usuarioLoginResponse = new UsuarioLoginResponse(usuario.getId(), usuario.getNome(), usuario.getEmail());
+        return ResponseEntity.ok(new LoginResponse(token,  usuarioLoginResponse));
+
+//        ResponseCookie cookie = ResponseCookie.from("token", token)
+//                .httpOnly(true)
+//                .secure(true)
+//                .path("/")
+//                .maxAge(7 * 24 * 60 * 60) // 7 dias
+//                .sameSite("Strict")
+//                .build();
+
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+//                .body(new LoginResponse(token));
     }
 
     @PostMapping("/registrar")
@@ -52,7 +65,6 @@ public class AuthController {
         novoUsuario.setNome(request.nome());
         novoUsuario.setEmail(request.email());
         novoUsuario.setSenha(passwordEncoder.encode(request.senha()));
-
         usuarioRepository.save(novoUsuario);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new RegistrarUsuarioResponse(novoUsuario.getNome(), novoUsuario.getEmail()));
