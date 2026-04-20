@@ -6,17 +6,36 @@ import { ThemeToggle } from '../components/ui/ThemeToggle';
 
 export const Cadastro: React.FC = () => {
   const navigate = useNavigate();
+  const [registro, setRegistro] = useState({
+    nome: '',
+    email: '',
+    senha: ''
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCadastro = (e: React.FormEvent) => {
+  const handleCadastro = async( e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simula uma chamada de API profissional
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate('/progresso');
-    }, 1500);
+
+    try {
+      const resposta = await fetch('http://localhost:8080/auth/registrar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+          registro
+        )
+      });
+      if (resposta.ok) {
+        console.log('Usuário registrado com sucesso!');
+        setIsLoading(false);
+
+      }
+    } catch (error) {
+      console.error('Erro ao registrar usuário:', error);
+    }
   };
 
   return (
@@ -45,9 +64,9 @@ export const Cadastro: React.FC = () => {
             </div>
 
             <form className="flex flex-col gap-5" onSubmit={handleCadastro}>
-              <Input label="Nome Completo" placeholder="Digite seu nome completo" type="text" />
-              <Input label="Endereço de E-mail" placeholder="nome@exemplo.com" type="email" />
-              
+              <Input label="Nome Completo" value={registro.nome} onChange={(e) => setRegistro({ ...registro, nome: e.target.value })} placeholder="Digite seu nome completo" type="text" />
+              <Input label="Endereço de E-mail" value={registro.email} onChange={(e) => setRegistro({ ...registro, email: e.target.value })} placeholder="nome@exemplo.com" type="email" />
+
               <div className="flex flex-col gap-2">
                 <label className="text-slate-900 dark:text-slate-200 text-sm font-semibold">Senha</label>
                 <div className="relative flex items-center">
@@ -55,6 +74,8 @@ export const Cadastro: React.FC = () => {
                     className="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary h-12 pl-4 pr-12 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none"
                     placeholder="Crie uma senha"
                     type="password"
+                    value={registro.senha}
+                    onChange={(e) => setRegistro({ ...registro, senha: e.target.value })}
                   />
                   <button className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" type="button">
                     <span className="material-symbols-outlined">visibility</span>

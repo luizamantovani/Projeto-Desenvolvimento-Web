@@ -13,7 +13,7 @@ import java.util.Optional;
 @Component
 public class TokenConfig {
 
-    private String secret = System.getenv("SECRET_KEY");
+    private String secret = "minha_chave_secreta_para_assinar_tokens";
 
     public String generateToken(Usuario usuario) {
         return JWT.create()

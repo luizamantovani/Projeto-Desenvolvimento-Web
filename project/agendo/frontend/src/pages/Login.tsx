@@ -6,16 +6,43 @@ import { ThemeToggle } from '../components/ui/ThemeToggle';
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [usuario, setUsuario] = useState({
+    nome: '',
+    id: '',
+    email: ''
+  });
+  const [Login, setLogin] = useState({
+    email: '',
+    senha: ''
+  });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simula uma chamada de API profissional
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate('/progresso');
-    }, 1500);
+
+
+    try {
+      const resposta = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Login),
+      });
+      const data = await resposta.json();
+      if (resposta.ok) {
+        // Registro bem-sucedido, redirecionar para a página de progresso
+        const token = data.token; // Supondo que o token seja retornado na resposta
+        localStorage.setItem('token', token); // Armazena o token no localStorage
+        
+        localStorage.setItem('usuario', JSON.stringify(data.usuarioLoginResponse)); // Armazena os dados do usuário no localStorage
+        
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -62,11 +89,13 @@ export const Login: React.FC = () => {
                     <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Endereço de E-mail</label>
                     <input
                       className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400"
+                      value={Login.email}
+                      onChange={(e) => setLogin({ ...Login, email: e.target.value })}
                       placeholder="estudante@universidade.edu"
                       type="email"
                     />
                   </div>
-                  
+
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                       <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Senha</label>
@@ -75,6 +104,8 @@ export const Login: React.FC = () => {
                     <div className="relative">
                       <input
                         className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400"
+                        value={Login.senha}
+                        onChange={(e) => setLogin({ ...Login, senha: e.target.value })}
                         placeholder="••••••••"
                         type="password"
                       />
