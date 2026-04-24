@@ -21,8 +21,8 @@ export const Home: React.FC = () => {
             <div className="flex items-center space-x-4">
               <ThemeToggle />
               <Link className="hidden md:block text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium" to="/login">Entrar</Link>
-              <Link to="/cadastro">
-                <Botao className="px-3 py-2 text-sm" >Começar Agora</Botao>
+              <Link className="hidden md:block" to="/cadastro">
+                <Botao className="px-3 py-2 text-sm hover:bg-blue-600 cursor-pointer hover:text-white dark:hover:text-white" >Começar Agora</Botao>
               </Link>
             </div>
           </div>
@@ -33,7 +33,7 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
             Domine seus Estudos com um <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Planejamento Eficaz</span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-400">Planejamento Eficaz</span>
           </h1>
           <p className="mt-4 text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10">
             Pare de se estressar com o que estudar e quando. O Agendo é a ferramenta de gestão que organiza seu cronograma com base na sua disponibilidade e prioridades.
@@ -48,7 +48,7 @@ export const Home: React.FC = () => {
             </a>
           </div>
         </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
       </section>
 
       <section className="py-24 bg-white dark:bg-slate-800/50" id="recursos">
