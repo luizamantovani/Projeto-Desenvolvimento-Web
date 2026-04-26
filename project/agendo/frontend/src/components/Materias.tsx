@@ -6,7 +6,7 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
   const adicionarMateria = () => {
     setMaterias((prev: any) => [
       ...prev,
-      { id: Date.now(), name: "", difficulty: 5, importance : 5 }
+      { id: Date.now(), nome: "", dificuldade: 5, importancia : 5 }
     ]);
   };
 
@@ -41,9 +41,9 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
                   className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:ring-1 focus:ring-primary"
                   placeholder="Nome da Matéria"
                   type="text"
-                  value={mat.name}
+                  value={mat.nome}
                   onChange={(e) =>
-                    atualizarMateria(mat.id, "name", e.target.value)
+                    atualizarMateria(mat.id, "nome", e.target.value)
                   }
                 />
 
@@ -52,9 +52,9 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
                     Nível de Dificuldade
                   </p>
                   <DifficultySlider
-                    value={mat.difficulty}
+                    value={mat.dificuldade}
                     onChange={(valor: number) =>
-                      atualizarMateria(mat.id, "difficulty", valor)
+                      atualizarMateria(mat.id, "dificuldade", valor)
                     }
                   />
                 </div>
@@ -64,9 +64,9 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
                     Nível de Importância
                   </p>
                   <ImportanceSlider
-                    value={mat.importance}
+                    value={mat.importancia}
                     onChange={(valor: number) =>
-                      atualizarMateria(mat.id, "importance", valor)
+                      atualizarMateria(mat.id, "importancia", valor)
                     }
                   />
                 </div>

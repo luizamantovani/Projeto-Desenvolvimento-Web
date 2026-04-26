@@ -5,9 +5,18 @@ import Calendar from '../components/Calender';
 import Disponibility from '../components/Disponibility';
 
 type Horario = {
-  id: number;
   inicio: string;
   fim: string;
+};
+
+const diaParaNumero: Record<string, number> = {
+  "Seg": 1,
+  "Ter": 2,
+  "Qua": 3,
+  "Qui": 4,
+  "Sex": 5,
+  "Sáb": 6,
+  "Dom": 7
 };
 
 export const ConfigurarPlano: React.FC = () => {
@@ -18,17 +27,22 @@ export const ConfigurarPlano: React.FC = () => {
   ]);
 
   const [horarios, setHorarios] = useState<Horario[]>([
-    { id: 1, inicio: "08:00", fim: "12:00" },
-    { id: 2, inicio: "14:00", fim: "18:00" }
+    { inicio: "08:00", fim: "12:00" },
+    { inicio: "14:00", fim: "18:00" }
   ]);
 
 
   const montarDados = () => {
+    // Converter nomes dos dias para números (Seg=1, Ter=2, etc.) e filtrar valores inválidos
+    const diasNumeros = diasSelecionados
+      .map(dia => diaParaNumero[dia])
+      .filter((num): num is number => num !== undefined);
+
     return {
-      dataExame: dataSelecionada,
+      dataLimite: dataSelecionada,
       materias: materias,
-      disponibilidade: {
-        dias: diasSelecionados,
+      diasSemanaDisponiveis: {
+        dias: diasNumeros,
         horarios: horarios
       }
     };
