@@ -41,32 +41,34 @@ export const ConfigurarPlano: React.FC = () => {
   };
 
 
-return (
-  <DashboardLayout>
-    <div className="flex flex-col gap-4 mb-8">
-      <h1 className="text-4xl font-black">Configurar Plano de Estudos</h1>
-    </div>
+  return (
+    <DashboardLayout>
+      <div className="flex flex-col gap-4 mb-8">
+        <h1 className="text-4xl font-black">Configurar Plano de Estudos</h1>
+      </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div><Calendar setDataSelecionada={setDataSelecionada} /></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div><Calendar setDataSelecionada={setDataSelecionada} /></div>
 
-      <Materias materias={materias} setMaterias={setMaterias} />
-    </div>
+        <Materias materias={materias} setMaterias={setMaterias} />
+      </div>
 
-    <Disponibility
-      diasSelecionados={diasSelecionados}
-      setDiasSelecionados={setDiasSelecionados}
-      horarios={horarios}
-      setHorarios={setHorarios}
-    />
+      <Disponibility
+        diasSelecionados={diasSelecionados}
+        setDiasSelecionados={setDiasSelecionados}
+        horarios={horarios}
+        setHorarios={setHorarios}
+      />
 
-    {/* BOTÃO FINAL */}
-    <button
-      onClick={enviarDados}
-      className="mt-8 px-6 py-3 bg-primary text-white rounded-lg"
-    >
-      Gerar Meu Cronograma
-    </button>
-  </DashboardLayout>
-);
+      {/* BOTÃO FINAL */}
+      <div className="flex justify-center">
+      <button
+        onClick={enviarDados}
+        className="mt-8 px-6 py-3 bg-primary text-white rounded-lg cursor-pointer 
+             active:opacity-50 transition" gap-2 >
+        Gerar Meu Cronograma
+      </button>
+      </div>
+    </DashboardLayout>
+  );
 };

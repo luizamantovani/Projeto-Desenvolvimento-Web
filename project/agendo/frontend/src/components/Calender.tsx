@@ -1,23 +1,58 @@
 import { useState } from "react";
 
-export default function Calendar({ setDataSelecionada }: { setDataSelecionada: (data: string) => void }) {
+export default function Calendar({
+  setDataSelecionada,
+}: {
+  setDataSelecionada: (data: string) => void;
+}) {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const handleSelect = (day: any) => {
-    const data = `${day} de Out, 2024`;
-    setDataSelecionada(data);
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfWeek = new Date(year, month, 1).getDay();
+
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  const handleSelect = (day: number) => {
+    const data = new Date(year, month, day);
+    const formatted = data.toLocaleDateString("pt-BR");
+    setDataSelecionada(formatted);
+    setSelectedDay(day);
   };
-  const [selectedDay, setSelectedDay] = useState(16);
 
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
-  const formatDate = (day: number) => {
-    return `${day} de Out, 2024`;
+  const changeMonth = (direction: number) => {
+    setCurrentDate(new Date(year, month + direction, 1));
+    setSelectedDay(null);
   };
 
-
+  const formatDate = () => {
+    if (!selectedDay) return "";
+    return new Date(year, month, selectedDay).toLocaleDateString("pt-BR");
+  };
 
   return (
     <div className="p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800">
+
+      {/* HEADER (novo, mas simples e sem mudar estilo geral) */}
+      <div className="flex justify-between items-center mb-2">
+        <button onClick={() => changeMonth(-1)} className="cursor-pointer">
+          ◀
+        </button>
+
+        <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+          {currentDate.toLocaleDateString("pt-BR", {
+            month: "short",
+            year: "numeric",
+          })}
+        </p>
+
+        <button onClick={() => changeMonth(1)} className="cursor-pointer">
+          ▶
+        </button>
+      </div>
 
       {/* CALENDÁRIO */}
       <div className="grid grid-cols-7 text-center">
@@ -29,21 +64,24 @@ export default function Calendar({ setDataSelecionada }: { setDataSelecionada: (
           </p>
         ))}
 
-        {/* Dias do mês */}
+        {/* Espaço antes do primeiro dia */}
+        {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+          <div key={"empty-" + i}></div>
+        ))}
+
+        {/* Dias */}
         {days.map((day) => {
           const isSelected = day === selectedDay;
 
           return (
             <div
               key={day}
-              onClick={() => {
-                setSelectedDay(day);
-                handleSelect(day);
-              }}
+              onClick={() => handleSelect(day)}
               className={`py-2 text-sm rounded-lg cursor-pointer transition-colors
-                ${isSelected
-                  ? "bg-primary text-white shadow-lg shadow-primary/30"
-                  : "text-slate-900 dark:text-slate-100 hover:bg-primary/10"
+                ${
+                  isSelected
+                    ? "bg-primary text-white shadow-lg shadow-primary/30"
+                    : "text-slate-900 dark:text-slate-100 hover:bg-primary/10"
                 }
               `}
             >
@@ -63,7 +101,7 @@ export default function Calendar({ setDataSelecionada }: { setDataSelecionada: (
           <input
             className="w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-sm focus:ring-2 focus:ring-primary outline-none"
             readOnly
-            value={formatDate(selectedDay)}
+            value={formatDate()}
           />
 
           <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
