@@ -31,9 +31,7 @@ export const ConfigurarPlano: React.FC = () => {
     { inicio: "14:00", fim: "18:00" }
   ]);
 
-
   const montarDados = () => {
-    // Converter nomes dos dias para números (Seg=1, Ter=2, etc.) e filtrar valores inválidos
     const diasNumeros = diasSelecionados
       .map(dia => diaParaNumero[dia])
       .filter((num): num is number => num !== undefined);
@@ -50,38 +48,48 @@ export const ConfigurarPlano: React.FC = () => {
 
   const enviarDados = () => {
     const dados = montarDados();
-
     console.log("JSON FINAL:", JSON.stringify(dados, null, 2));
   };
 
-
   return (
     <DashboardLayout>
-      <div className="flex flex-col gap-4 mb-8">
-        <h1 className="text-4xl font-black">Configurar Plano de Estudos</h1>
+      {/* HEADER */}
+      <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black">
+          Configurar Plano de Estudos
+        </h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div><Calendar setDataSelecionada={setDataSelecionada} /></div>
+      {/* GRID PRINCIPAL */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <div className="w-full">
+          <Calendar setDataSelecionada={setDataSelecionada} />
+        </div>
 
-        <Materias materias={materias} setMaterias={setMaterias} />
+        <div className="w-full">
+          <Materias materias={materias} setMaterias={setMaterias} />
+        </div>
       </div>
 
-      <Disponibility
-        diasSelecionados={diasSelecionados}
-        setDiasSelecionados={setDiasSelecionados}
-        horarios={horarios}
-        setHorarios={setHorarios}
-      />
+      {/* DISPONIBILIDADE */}
+      <div className="w-full overflow-x-auto">
+        <Disponibility
+          diasSelecionados={diasSelecionados}
+          setDiasSelecionados={setDiasSelecionados}
+          horarios={horarios}
+          setHorarios={setHorarios}
+        />
+      </div>
 
       {/* BOTÃO FINAL */}
       <div className="flex justify-center">
-      <button
-        onClick={enviarDados}
-        className="mt-8 px-6 py-3 bg-primary text-white rounded-lg cursor-pointer 
-             active:opacity-50 transition" gap-2 >
-        Gerar Meu Cronograma
-      </button>
+        <button
+          onClick={enviarDados}
+          className="mt-8 w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg cursor-pointer 
+                     active:opacity-50 transition"
+        >
+          Gerar Meu Cronograma
+        </button>
       </div>
     </DashboardLayout>
   );
