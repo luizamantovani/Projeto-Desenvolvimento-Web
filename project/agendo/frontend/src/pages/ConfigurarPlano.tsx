@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // ADIÇÃO: Hook de navegação
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import Materias from '../components/Materias';
 import Calendar from '../components/Calender';
@@ -20,6 +21,8 @@ const diaParaNumero: Record<string, number> = {
 };
 
 export const ConfigurarPlano: React.FC = () => {
+  const navigate = useNavigate(); // ADIÇÃO: Instância de navegação
+
   const [dataSelecionada, setDataSelecionada] = useState("");
   const [materias, setMaterias] = useState([]);
   const [diasSelecionados, setDiasSelecionados] = useState<string[]>([
@@ -30,6 +33,10 @@ export const ConfigurarPlano: React.FC = () => {
     { inicio: "08:00", fim: "12:00" },
     { inicio: "14:00", fim: "18:00" }
   ]);
+
+  // ADIÇÃO: Estados para gerir o carregamento e os alertas
+  const [isLoading, setIsLoading] = useState(false);
+  const [alertInfo, setAlertInfo] = useState<{ tipo: 'sucesso' | 'erro'; mensagem: string } | null>(null);
 
   const montarDados = () => {
     const diasNumeros = diasSelecionados
@@ -53,6 +60,8 @@ export const ConfigurarPlano: React.FC = () => {
   const enviarDados = async () => {
     const dados = montarDados();
     console.log("JSON FINAL:", JSON.stringify(dados, null, 2));
+    setIsLoading(true);
+    setAlertInfo(null);
 
     try {
       const resposta = await fetch('http://localhost:8080/cronogramas/gerar', {
@@ -63,13 +72,24 @@ export const ConfigurarPlano: React.FC = () => {
         },
         body: JSON.stringify(dados)
       });
+      
       if (!resposta.ok) {
         throw new Error('Erro ao criar cronograma');
       }
+      
       const data = await resposta.json();
       console.log('Cronograma criado com sucesso:', data);
+
+      setAlertInfo({ tipo: 'sucesso', mensagem: 'Cronograma gerado com sucesso! A redirecionar...' });
+      setTimeout(() => {
+        navigate('/cronograma');
+      }, 1500);
+
     } catch (error) {
       console.error('Erro ao criar cronograma:', error);
+      
+      setAlertInfo({ tipo: 'erro', mensagem: 'Falha ao gerar o seu cronograma. Tente novamente.' });
+      setIsLoading(false);
     }
   };
 
@@ -82,7 +102,16 @@ export const ConfigurarPlano: React.FC = () => {
         </h1>
       </div>
 
-      {/* GRID PRINCIPAL */}
+      {alertInfo && (
+        <div 
+          className={`p-4 mb-6 rounded-lg text-white font-medium flex items-center justify-center ${
+            alertInfo.tipo === 'sucesso' ? 'bg-emerald-500' : 'bg-red-500'
+          }`}
+        >
+          {alertInfo.mensagem}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
         <div className="w-full">
           <Calendar setDataSelecionada={setDataSelecionada} />
@@ -93,7 +122,6 @@ export const ConfigurarPlano: React.FC = () => {
         </div>
       </div>
 
-      {/* DISPONIBILIDADE */}
       <div className="w-full overflow-x-auto">
         <Disponibility
           diasSelecionados={diasSelecionados}
@@ -103,14 +131,15 @@ export const ConfigurarPlano: React.FC = () => {
         />
       </div>
 
-      {/* BOTÃO FINAL */}
+
       <div className="flex justify-center">
         <button
           onClick={enviarDados}
-          className="mt-8 w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg cursor-pointer 
-                     active:opacity-50 transition"
+          disabled={isLoading} 
+          className={`mt-8 w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg transition 
+                     ${isLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer active:opacity-50'}`}
         >
-          Gerar Meu Cronograma
+          {isLoading ? 'A gerar cronograma...' : 'Gerar Meu Cronograma'}
         </button>
       </div>
     </DashboardLayout>
