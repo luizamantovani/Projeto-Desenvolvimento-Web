@@ -1,208 +1,312 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 
+interface Materia {
+  id: number;
+  nome: string;
+  hex: string;
+}
+
+interface Sessao {
+  id: number;
+  data: string; 
+  horaInicio: string; 
+  horaFim: string; 
+  concluido: boolean;
+  status: string;
+  materia: Materia;
+}
+
+type ViewMode = 'dia' | 'semana' | 'mes';
+
 export const Cronograma: React.FC = () => {
+  const [sessoes, setSessoes] = useState<Sessao[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>('semana');
+
+  useEffect(() => {
+    const fetchCronograma = async () => {
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem('@Agendo:token'); 
+        
+        const resposta = await fetch('http://localhost:8080/cronogramas', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!resposta.ok) throw new Error('Falha ao carregar o cronograma.');
+
+        const data = await resposta.json();
+        setSessoes(data);
+      } catch {
+        console.error('Não foi possível carregar seu cronograma.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCronograma();
+  }, []);
+
+  const formataDataIso = (data: Date) => {
+    return new Date(data.getTime() - data.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+  }
+
+  const hoje = new Date();
+  const hojeString = formataDataIso(hoje);
+
+  const obterDiasVisualizacao = () => {
+    if (viewMode === 'dia') return [hoje];
+
+    if (viewMode === 'semana') {
+      const diaDaSemana = hoje.getDay();
+      const distanciaParaSegunda = diaDaSemana === 0 ? -6 : 1 - diaDaSemana; 
+      const segundaFeira = new Date(hoje);
+      segundaFeira.setDate(hoje.getDate() + distanciaParaSegunda);
+
+      return Array.from({ length: 7 }).map((_, i) => {
+        const data = new Date(segundaFeira);
+        data.setDate(segundaFeira.getDate() + i);
+        return data;
+      });
+    }
+
+    if (viewMode === 'mes') {
+      const ano = hoje.getFullYear();
+      const mes = hoje.getMonth();
+      const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+      const dias = Array.from({ length: diasNoMes }).map((_, i) => new Date(ano, mes, i + 1));
+      
+      const primeiroDiaDaSemana = new Date(ano, mes, 1).getDay();
+      const paddingInicio = primeiroDiaDaSemana === 0 ? 6 : primeiroDiaDaSemana - 1; 
+      
+      const padding: (Date | null)[] = Array(paddingInicio).fill(null);
+      return [...padding, ...dias];
+    }
+    return [];
+  };
+
+  const diasVisualizacao = obterDiasVisualizacao();
+  const nomesDosDias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+
+  // --- NOVA LÓGICA: Geração do Eixo Y (Horas) e Conversão de Tempo para Pixels ---
+  const horasDoDia = Array.from({ length: 24 }).map((_, i) => `${i.toString().padStart(2, '0')}:00`);
+
+  // Converte "14:30" para minutos totais (Ex: 14 * 60 + 30 = 870px do topo)
+  const horaParaPixels = (horaStr: string) => {
+    const [horas, minutos] = horaStr.split(':').map(Number);
+    return (horas * 60) + minutos; 
+  };
+
+  const duracaoParaPixels = (inicio: string, fim: string) => {
+    return horaParaPixels(fim) - horaParaPixels(inicio);
+  };
+
+  const calcularDuracaoTexto = (inicio: string, fim: string) => {
+    return `${inicio.slice(0, 5)} - ${fim.slice(0, 5)}`; 
+  };
+
+  const tarefasDeHoje = sessoes.filter(sessao => sessao.data === hojeString);
+  const sessoesPendentes = tarefasDeHoje.filter(s => !s.concluido).length;
+
   return (
     <DashboardLayout>
       <div className="flex gap-8">
-          {/* Left Side: Interactive Calendar */}
           <div className="flex-1 space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h2>
                 <p className="text-slate-500 text-sm">Gerencie seus blocos de estudo semanais e sessões de foco profundo.</p>
               </div>
+              
               <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
-                <button className="px-4 py-1.5 text-sm font-medium rounded-md hover:bg-slate-50 dark:hover:bg-slate-700">Dia</button>
-                <button className="px-4 py-1.5 text-sm font-medium rounded-md bg-primary text-white shadow-sm">Semana</button>
-                <button className="px-4 py-1.5 text-sm font-medium rounded-md hover:bg-slate-50 dark:hover:bg-slate-700">Mês</button>
+                <button onClick={() => setViewMode('dia')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'dia' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Dia</button>
+                <button onClick={() => setViewMode('semana')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'semana' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Semana</button>
+                <button onClick={() => setViewMode('mes')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'mes' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Mês</button>
               </div>
             </div>
 
-            {/* Subject Difficulty Legend */}
-            <div className="flex gap-4 p-4 bg-white dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-red-500"></span>
-                <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Difícil (Foco Profundo)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-orange-400"></span>
-                <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Médio (Rotina)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
-                <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Fácil (Revisão)</span>
-              </div>
-            </div>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+              
+              {/* Header com Espaçador Mágico para o Eixo Y */}
+              <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                {/* Espaço vazio na esquerda para alinhar com a coluna de horas */}
+                {viewMode !== 'mes' && <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800"></div>}
+                
+                <div className={`flex-1 grid ${viewMode === 'mes' ? 'grid-cols-7' : `grid-cols-${diasVisualizacao.length}`}`}>
+                  {viewMode === 'mes' ? (
+                    nomesDosDias.map((dia, idx) => (
+                      <div key={dia} className={`p-3 text-center ${idx < 6 ? 'border-r border-slate-200 dark:border-slate-700' : ''}`}>
+                        <p className="text-xs font-bold text-slate-400 uppercase">{dia}</p>
+                      </div>
+                    ))
+                  ) : (
+                    diasVisualizacao.map((dataObj, idx) => {
+                      if(!dataObj) return null;
+                      const numeroDoDia = dataObj.getDate();
+                      const ehHoje = formataDataIso(dataObj) === hojeString;
+                      const diaSemanaIndex = dataObj.getDay() === 0 ? 6 : dataObj.getDay() - 1;
 
-            {/* Weekly Calendar Grid */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-              <div className="grid grid-cols-7 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
-                <div className="p-4 text-center border-r border-slate-200 dark:border-slate-700">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Seg</p>
-                  <p className="text-lg font-bold">16</p>
-                </div>
-                <div className="p-4 text-center border-r border-slate-200 dark:border-slate-700">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Ter</p>
-                  <p className="text-lg font-bold">17</p>
-                </div>
-                <div className="p-4 text-center border-r border-slate-200 dark:border-slate-700 bg-primary/5">
-                  <p className="text-[10px] font-bold text-primary uppercase">Qua</p>
-                  <p className="text-lg font-bold text-primary">18</p>
-                </div>
-                <div className="p-4 text-center border-r border-slate-200 dark:border-slate-700">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Qui</p>
-                  <p className="text-lg font-bold">19</p>
-                </div>
-                <div className="p-4 text-center border-r border-slate-200 dark:border-slate-700">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Sex</p>
-                  <p className="text-lg font-bold">20</p>
-                </div>
-                <div className="p-4 text-center border-r border-slate-200 dark:border-slate-700">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Sáb</p>
-                  <p className="text-lg font-bold">21</p>
-                </div>
-                <div className="p-4 text-center">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Dom</p>
-                  <p className="text-lg font-bold">22</p>
+                      return (
+                        <div key={idx} className={`p-4 text-center ${idx < (diasVisualizacao.length - 1) ? 'border-r border-slate-200 dark:border-slate-700' : ''} ${ehHoje ? 'bg-primary/5' : ''}`}>
+                          <p className={`text-[10px] font-bold uppercase ${ehHoje ? 'text-primary' : 'text-slate-400'}`}>{nomesDosDias[diaSemanaIndex]}</p>
+                          <p className={`text-lg font-bold ${ehHoje ? 'text-primary' : ''}`}>{numeroDoDia}</p>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-7 h-[500px] overflow-y-auto">
-                {/* Monday Column */}
-                <div className="border-r border-slate-200 dark:border-slate-800 p-2 space-y-2 relative">
-                  <div className="absolute inset-0 bg-slate-50/30 dark:bg-slate-800/10 h-full pointer-events-none"></div>
-                  <div className="p-2 rounded-lg bg-orange-400/10 border-l-4 border-orange-400">
-                    <p className="text-[10px] font-bold text-orange-600">09:00 - 10:30</p>
-                    <p className="text-xs font-bold truncate">Princípios de SO</p>
+              {/* Corpo do Calendário */}
+              <div className="relative h-150 overflow-y-auto">
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 z-50">
+                    <p className="font-medium text-slate-500">Carregando cronograma...</p>
                   </div>
-                  <div className="p-2 rounded-lg bg-red-500/10 border-l-4 border-red-500">
-                    <p className="text-[10px] font-bold text-red-600">14:00 - 16:00</p>
-                    <p className="text-xs font-bold truncate">Cálculo III</p>
+                )}
+                
+                {/* Visualização de MÊS (Continua em Grade Simples) */}
+                {viewMode === 'mes' && (
+                  <div className="grid grid-cols-7 auto-rows-[100px]">
+                    {!isLoading && diasVisualizacao.map((dataObj, idx) => {
+                      if (!dataObj) return <div key={`empty-${idx}`} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 bg-slate-50/30 dark:bg-slate-800/20"></div>;
+
+                      const dataDaColuna = formataDataIso(dataObj);
+                      const sessoesDoDia = sessoes.filter(s => s.data === dataDaColuna);
+
+                      return (
+                        <div key={dataDaColuna} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 space-y-1 overflow-y-auto">
+                          <p className={`text-xs text-right font-semibold mb-1 ${dataDaColuna === hojeString ? 'text-primary' : 'text-slate-500'}`}>{dataObj.getDate()}</p>
+                          {sessoesDoDia.map(sessao => (
+                            <div key={sessao.id} className="p-1 rounded text-[10px] font-bold truncate shadow-sm cursor-pointer"
+                              style={{ backgroundColor: `${sessao.materia.hex}1A`, color: sessao.materia.hex, borderLeft: `2px solid ${sessao.materia.hex}` }}
+                            >
+                              {sessao.materia.nome}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
-                {/* Tuesday Column */}
-                <div className="border-r border-slate-200 dark:border-slate-800 p-2 space-y-2">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 border-l-4 border-emerald-500">
-                    <p className="text-[10px] font-bold text-emerald-600">10:00 - 11:00</p>
-                    <p className="text-xs font-bold truncate">Redação Técnica</p>
-                  </div>
-                </div>
-                {/* Wednesday Column (Active) */}
-                <div className="border-r border-slate-200 dark:border-slate-800 p-2 space-y-2 bg-primary/[0.02]">
-                  <div className="p-2 rounded-lg bg-red-500/10 border-l-4 border-red-500 shadow-sm">
-                    <p className="text-[10px] font-bold text-red-600">08:00 - 10:00</p>
-                    <p className="text-xs font-bold truncate">Estruturas de Dados</p>
-                  </div>
-                  <div className="p-2 rounded-lg bg-orange-400/10 border-l-4 border-orange-400 shadow-sm opacity-50 ring-1 ring-orange-200">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-bold text-orange-600">11:30 - 13:00</p>
-                      <span className="material-symbols-outlined text-[14px] text-orange-600">check_circle</span>
+                )}
+
+                {/* Visualização de DIA/SEMANA (Eixo Y com Horas) */}
+                {viewMode !== 'mes' && (
+                  <div className="flex relative bg-white dark:bg-slate-900" style={{ height: '1440px' }}> {/* 24h * 60px = 1440px */}
+                    
+                    {/* Eixo das Horas (Fixo na Esquerda) */}
+                    <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800 relative bg-white dark:bg-slate-900 z-10">
+                      {horasDoDia.map((hora) => (
+                        <div key={hora} className="h-15 relative border-b border-transparent">
+                          <span className="absolute -top-2.5 right-2 text-[10px] font-bold text-slate-400">{hora}</span>
+                        </div>
+                      ))}
                     </div>
-                    <p className="text-xs font-bold truncate">Matemática Discreta</p>
+
+                    {/* Linhas de Grade de Fundo */}
+                    <div className="absolute top-0 right-0 left-16 bottom-0 flex flex-col pointer-events-none">
+                      {horasDoDia.map((hora) => (
+                        <div key={hora} className="h-15 border-b border-slate-100 dark:border-slate-800/30"></div>
+                      ))}
+                    </div>
+
+                    {/* Colunas dos Dias (Onde os eventos caem) */}
+                    <div className="flex-1 flex relative">
+                      {!isLoading && diasVisualizacao.map((dataObj, idx) => {
+                        if (!dataObj) return null;
+                        const dataDaColuna = formataDataIso(dataObj);
+                        const sessoesDoDia = sessoes.filter(s => s.data === dataDaColuna);
+
+                        return (
+                          <div key={idx} className={`flex-1 relative border-r border-slate-100 dark:border-slate-800/30 ${dataDaColuna === hojeString ? 'bg-primary/1' : ''}`}>
+                            {sessoesDoDia.map(sessao => {
+                              // Cálculo Matemático da Posição do Card
+                              const topoPixels = horaParaPixels(sessao.horaInicio);
+                              const alturaPixels = duracaoParaPixels(sessao.horaInicio, sessao.horaFim);
+
+                              return (
+                                <div 
+                                  key={sessao.id} 
+                                  className="absolute left-1 right-1 rounded-lg shadow-sm p-2 flex flex-col justify-start overflow-hidden hover:scale-[1.01] transition-transform z-20 cursor-pointer"
+                                  style={{ 
+                                    top: `${topoPixels}px`, 
+                                    height: `${alturaPixels}px`, // Altura dinâmica
+                                    borderLeft: `4px solid ${sessao.materia.hex || '#3b82f6'}`,
+                                    backgroundColor: `${sessao.materia.hex}25` // Opacidade um pouquinho maior
+                                  }}
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <p className="text-[10px] font-bold leading-none" style={{ color: sessao.materia.hex }}>
+                                      {calcularDuracaoTexto(sessao.horaInicio, sessao.horaFim)}
+                                    </p>
+                                    {sessao.concluido && (
+                                      <span className="material-symbols-outlined text-[12px] leading-none" style={{ color: sessao.materia.hex }}>
+                                        check_circle
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-xs font-bold truncate mt-1 leading-tight" title={sessao.materia.nome}>
+                                    {sessao.materia.nome}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div className="p-2 rounded-lg bg-primary border-l-4 border-white text-white shadow-lg scale-[1.02] transform transition">
-                    <p className="text-[10px] font-bold text-blue-100">15:00 - 17:00</p>
-                    <p className="text-xs font-bold truncate">Lab de Projetos (Agora)</p>
-                  </div>
-                </div>
-                {/* Thursday Column */}
-                <div className="border-r border-slate-200 dark:border-slate-800 p-2 space-y-2">
-                  <div className="p-2 rounded-lg bg-red-500/10 border-l-4 border-red-500">
-                    <p className="text-[10px] font-bold text-red-600">13:00 - 15:00</p>
-                    <p className="text-xs font-bold truncate">Prep Algoritmos</p>
-                  </div>
-                </div>
-                {/* Friday Column */}
-                <div className="border-r border-slate-200 dark:border-slate-800 p-2 space-y-2">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 border-l-4 border-emerald-500">
-                    <p className="text-[10px] font-bold text-emerald-600">09:00 - 11:00</p>
-                    <p className="text-xs font-bold truncate">Revisão Livre</p>
-                  </div>
-                </div>
-                {/* Sat/Sun Columns */}
-                <div className="border-r border-slate-200 dark:border-slate-800 p-2 bg-slate-50/50 dark:bg-slate-800/20"></div>
-                <div className="p-2 bg-slate-50/50 dark:bg-slate-800/20"></div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Right Sidebar: Widgets */}
+          {/* Lado Direito: Widgets (Mantidos) */}
           <div className="w-80 space-y-6">
-            {/* Today's Tasks */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg">Tarefas de Hoje</h3>
-                <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/10 rounded-full">Faltam 3</span>
+                <span className="text-xs font-bold text-primary px-2 py-1 bg-primary/10 rounded-full">
+                  Faltam {sessoesPendentes}
+                </span>
               </div>
               <ul className="space-y-4">
-                <li className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-primary transition-colors"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Ler Capítulo 4 de SO</p>
-                    <p className="text-[10px] text-slate-500">Matéria: Sistemas • 45 min</p>
-                  </div>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded border-2 border-primary bg-primary flex items-center justify-center cursor-pointer">
-                    <span className="material-symbols-outlined text-white text-[16px]">check</span>
-                  </div>
-                  <div className="flex-1 opacity-50">
-                    <p className="text-sm font-medium line-through">Trabalho de Matemática 2</p>
-                    <p className="text-[10px] text-slate-500">Matéria: Cálculo III • Feito</p>
-                  </div>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center cursor-pointer hover:border-primary transition-colors"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Rascunho do Projeto</p>
-                    <p className="text-[10px] text-slate-500">Matéria: Lab de CC • 2h</p>
-                  </div>
-                </li>
+                {tarefasDeHoje.length === 0 && !isLoading && (
+                   <p className="text-sm text-slate-500 text-center">Nenhuma tarefa para hoje!</p>
+                )}
+                {tarefasDeHoje.map(tarefa => (
+                  <li key={tarefa.id} className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-colors ${
+                      tarefa.concluido ? 'bg-primary border-2 border-primary' : 'border-2 border-slate-300 dark:border-slate-600 hover:border-primary'
+                    }`}>
+                      {tarefa.concluido && <span className="material-symbols-outlined text-white text-[16px]">check</span>}
+                    </div>
+                    <div className={`flex-1 ${tarefa.concluido ? 'opacity-50' : ''}`}>
+                      <p className={`text-sm font-medium ${tarefa.concluido ? 'line-through' : ''}`}>Sessão de {tarefa.materia.nome}</p>
+                      <p className="text-[10px] text-slate-500">Das {calcularDuracaoTexto(tarefa.horaInicio, tarefa.horaFim)} • {tarefa.status}</p>
+                    </div>
+                  </li>
+                ))}
               </ul>
-              <button className="w-full mt-6 py-2 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                + Adicionar Nova Tarefa
-              </button>
             </div>
 
-            {/* Upcoming Exams */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-lg mb-4">Próximos Exames</h3>
-              <div className="space-y-3">
-                <div className="group cursor-pointer">
-                  <div className="flex items-start justify-between mb-1">
-                    <p className="text-sm font-bold group-hover:text-primary transition-colors">Prova: Estruturas de Dados</p>
-                    <span className="text-[10px] font-bold text-red-500 bg-red-100 px-1.5 py-0.5 rounded">3 dias</span>
-                  </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-red-500 h-full rounded-full" style={{ width: '90%' }}></div>
-                  </div>
-                  <p className="text-[10px] text-slate-500 mt-1">Dificuldade: Difícil • 21 Out, 2024</p>
-                </div>
-                <div className="group cursor-pointer">
-                  <div className="flex items-start justify-between mb-1">
-                    <p className="text-sm font-bold group-hover:text-primary transition-colors">Quiz: Matemática Discreta</p>
-                    <span className="text-[10px] font-bold text-orange-500 bg-orange-100 px-1.5 py-0.5 rounded">8 dias</span>
-                  </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-orange-400 h-full rounded-full" style={{ width: '45%' }}></div>
-                  </div>
-                  <p className="text-[10px] text-slate-500 mt-1">Dificuldade: Médio • 26 Out, 2024</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20">
-                <p className="text-[10px] font-bold text-primary uppercase">Horas de Estudo</p>
-                <p className="text-2xl font-black">24.5</p>
-                <p className="text-[10px] text-primary/60 mt-1">Esta semana</p>
+                <p className="text-[10px] font-bold text-primary uppercase">Sessões Totais</p>
+                <p className="text-2xl font-black">{sessoes.length}</p>
+                <p className="text-[10px] text-primary/60 mt-1">Geradas</p>
               </div>
               <div className="bg-emerald-500/10 rounded-2xl p-4 border border-emerald-500/20">
                 <p className="text-[10px] font-bold text-emerald-600 uppercase">Foco</p>
-                <p className="text-2xl font-black">92%</p>
-                <p className="text-[10px] text-emerald-600/60 mt-1">+4% vs semana pass.</p>
+                <p className="text-2xl font-black">
+                  {sessoes.length > 0 ? Math.round((sessoes.filter(s => s.concluido).length / sessoes.length) * 100) : 0}%
+                </p>
+                <p className="text-[10px] text-emerald-600/60 mt-1">Progresso geral</p>
               </div>
             </div>
           </div>
