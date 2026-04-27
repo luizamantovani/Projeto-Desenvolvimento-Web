@@ -36,19 +36,41 @@ export const ConfigurarPlano: React.FC = () => {
       .map(dia => diaParaNumero[dia])
       .filter((num): num is number => num !== undefined);
 
+    let dataFormatada = dataSelecionada;
+    if (dataSelecionada && dataSelecionada.includes('/')) {
+      const partes = dataSelecionada.split('/');
+      dataFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`;
+    }
+
     return {
-      dataLimite: dataSelecionada,
-      materias: materias,
-      diasSemanaDisponiveis: {
-        dias: diasNumeros,
-        horarios: horarios
-      }
+      dataLimite: dataFormatada,
+      diasSemanaDisponiveis: diasNumeros,
+      turnos: horarios,
+      materias: materias
     };
   };
 
-  const enviarDados = () => {
+  const enviarDados = async () => {
     const dados = montarDados();
     console.log("JSON FINAL:", JSON.stringify(dados, null, 2));
+
+    try {
+      const resposta = await fetch('http://localhost:8080/cronogramas/gerar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('@Agendo:token')}`
+        },
+        body: JSON.stringify(dados)
+      });
+      if (!resposta.ok) {
+        throw new Error('Erro ao criar cronograma');
+      }
+      const data = await resposta.json();
+      console.log('Cronograma criado com sucesso:', data);
+    } catch (error) {
+      console.error('Erro ao criar cronograma:', error);
+    }
   };
 
   return (
