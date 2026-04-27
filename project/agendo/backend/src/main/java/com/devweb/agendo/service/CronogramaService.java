@@ -31,6 +31,10 @@ public class CronogramaService {
         this.sessaoRepository = sessaoRepository;
     }
 
+    public List<Sessao> getCronograma(Usuario usuario) {
+        return sessaoRepository.findByUsuarioIdAndDataAfterOrderByDataAscHoraInicioAsc(usuario.getId(), LocalDate.now().minusDays(1));
+    }
+
     /**
      * Gera o cronograma distribuindo as matérias até a data limite e SALVA na base de dados.
      */

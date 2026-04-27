@@ -14,4 +14,6 @@ public interface SessaoRepository extends JpaRepository<Sessao, Long> {
 
     // Deleta sessões futuras se o usuário quiser gerar um novo cronograma
     void deleteByUsuarioIdAndDataAfter(Long usuarioId, LocalDate data);
+
+    List<Sessao> findByUsuarioIdAndDataAfterOrderByDataAscHoraInicioAsc(Long id, LocalDate localDate);
 }

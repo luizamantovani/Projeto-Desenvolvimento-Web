@@ -10,7 +10,7 @@ CREATE TABLE usuarios (
 CREATE TABLE materias (
                           id BIGSERIAL PRIMARY KEY,
                           nome VARCHAR(255) NOT NULL,
-                          dificuldade INTEGER NOT NULL CHECK (dificuldade BETWEEN 1 AND 3),
+                          dificuldade INTEGER NOT NULL CHECK (dificuldade BETWEEN 1 AND 10),
                           importancia INTEGER NOT NULL CHECK (importancia BETWEEN 1 AND 10),
                           hex VARCHAR(7),
                           usuario_id BIGINT NOT NULL,

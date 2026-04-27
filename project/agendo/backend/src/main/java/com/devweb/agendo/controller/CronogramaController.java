@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,6 +22,27 @@ public class CronogramaController {
 
     public CronogramaController(CronogramaService cronogramaService) {
         this.cronogramaService = cronogramaService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SessaoResponse>> getCronograma(@AuthenticationPrincipal Usuario usuario) {
+        List<Sessao> sessoes = cronogramaService.getCronograma(usuario);
+        List<SessaoResponse> response = sessoes.stream()
+                .map(s -> new SessaoResponse(
+                        s.getId(),
+                        s.getData(),
+                        s.getHoraInicio(),
+                        s.getHoraFim(),
+                        s.getConcluido(),
+                        s.getStatus().name(),
+                        new SessaoResponse.MateriaResumo(
+                                s.getMateria().getId(),
+                                s.getMateria().getNome(),
+                                s.getMateria().getHex()
+                        )
+                )).toList();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/gerar")

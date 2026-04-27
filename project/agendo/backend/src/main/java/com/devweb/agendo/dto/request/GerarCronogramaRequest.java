@@ -35,10 +35,9 @@ public record GerarCronogramaRequest(
     public record MateriaRequest(
             @NotBlank(message = "O nome da matéria não pode estar vazio.")
             String nome,
-
-            // Mantemos 1, 2 e 3 para representar Fácil, Médio e Difícil, conforme o algoritmo
+            
             @Min(value = 1, message = "A dificuldade mínima é 1 (Fácil).")
-            @Max(value = 3, message = "A dificuldade máxima é 3 (Difícil).")
+            @Max(value = 10, message = "A dificuldade máxima é 10 (Difícil).")
             Integer dificuldade,
 
             // A nova abordagem do slider
