@@ -93,10 +93,8 @@ export const Cronograma: React.FC = () => {
   const diasVisualizacao = obterDiasVisualizacao();
   const nomesDosDias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 
-  // --- NOVA LÓGICA: Geração do Eixo Y (Horas) e Conversão de Tempo para Pixels ---
   const horasDoDia = Array.from({ length: 24 }).map((_, i) => `${i.toString().padStart(2, '0')}:00`);
 
-  // Converte "14:30" para minutos totais (Ex: 14 * 60 + 30 = 870px do topo)
   const horaParaPixels = (horaStr: string) => {
     const [horas, minutos] = horaStr.split(':').map(Number);
     return (horas * 60) + minutos; 
@@ -115,159 +113,154 @@ export const Cronograma: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex gap-8">
-          <div className="flex-1 space-y-6">
-            <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          
+      
+          <div className="flex-1 space-y-6 min-w-0">
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h2 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h2>
                 <p className="text-slate-500 text-sm">Gerencie seus blocos de estudo semanais e sessões de foco profundo.</p>
               </div>
-              
-              <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
-                <button onClick={() => setViewMode('dia')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'dia' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Dia</button>
-                <button onClick={() => setViewMode('semana')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'semana' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Semana</button>
-                <button onClick={() => setViewMode('mes')} className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'mes' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Mês</button>
+              <div className="flex w-full md:w-auto items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
+                <button onClick={() => setViewMode('dia')} className={`flex-1 md:flex-none px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'dia' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Dia</button>
+                <button onClick={() => setViewMode('semana')} className={`flex-1 md:flex-none px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'semana' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Semana</button>
+                <button onClick={() => setViewMode('mes')} className={`flex-1 md:flex-none px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${viewMode === 'mes' ? 'bg-primary text-white shadow-sm' : 'hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>Mês</button>
               </div>
             </div>
 
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-              
-              {/* Header com Espaçador Mágico para o Eixo Y */}
-              <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
-                {/* Espaço vazio na esquerda para alinhar com a coluna de horas */}
-                {viewMode !== 'mes' && <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800"></div>}
-                
-                <div className={`flex-1 grid ${viewMode === 'mes' ? 'grid-cols-7' : `grid-cols-${diasVisualizacao.length}`}`}>
-                  {viewMode === 'mes' ? (
-                    nomesDosDias.map((dia, idx) => (
-                      <div key={dia} className={`p-3 text-center ${idx < 6 ? 'border-r border-slate-200 dark:border-slate-700' : ''}`}>
-                        <p className="text-xs font-bold text-slate-400 uppercase">{dia}</p>
-                      </div>
-                    ))
-                  ) : (
-                    diasVisualizacao.map((dataObj, idx) => {
-                      if(!dataObj) return null;
-                      const numeroDoDia = dataObj.getDate();
-                      const ehHoje = formataDataIso(dataObj) === hojeString;
-                      const diaSemanaIndex = dataObj.getDay() === 0 ? 6 : dataObj.getDay() - 1;
+              <div className="overflow-x-auto">
+                <div className="min-w-150 lg:min-w-full flex flex-col">
+                  <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+                    {viewMode !== 'mes' && <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800"></div>}
+                    
+                    <div className={`flex-1 grid ${viewMode === 'mes' ? 'grid-cols-7' : `grid-cols-${diasVisualizacao.length}`}`}>
+                      {viewMode === 'mes' ? (
+                        nomesDosDias.map((dia, idx) => (
+                          <div key={dia} className={`p-3 text-center ${idx < 6 ? 'border-r border-slate-200 dark:border-slate-700' : ''}`}>
+                            <p className="text-xs font-bold text-slate-400 uppercase">{dia}</p>
+                          </div>
+                        ))
+                      ) : (
+                        diasVisualizacao.map((dataObj, idx) => {
+                          if(!dataObj) return null;
+                          const numeroDoDia = dataObj.getDate();
+                          const ehHoje = formataDataIso(dataObj) === hojeString;
+                          const diaSemanaIndex = dataObj.getDay() === 0 ? 6 : dataObj.getDay() - 1;
 
-                      return (
-                        <div key={idx} className={`p-4 text-center ${idx < (diasVisualizacao.length - 1) ? 'border-r border-slate-200 dark:border-slate-700' : ''} ${ehHoje ? 'bg-primary/5' : ''}`}>
-                          <p className={`text-[10px] font-bold uppercase ${ehHoje ? 'text-primary' : 'text-slate-400'}`}>{nomesDosDias[diaSemanaIndex]}</p>
-                          <p className={`text-lg font-bold ${ehHoje ? 'text-primary' : ''}`}>{numeroDoDia}</p>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-
-              {/* Corpo do Calendário */}
-              <div className="relative h-150 overflow-y-auto">
-                {isLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 z-50">
-                    <p className="font-medium text-slate-500">Carregando cronograma...</p>
+                          return (
+                            <div key={idx} className={`p-4 text-center ${idx < (diasVisualizacao.length - 1) ? 'border-r border-slate-200 dark:border-slate-700' : ''} ${ehHoje ? 'bg-primary/5' : ''}`}>
+                              <p className={`text-[10px] font-bold uppercase ${ehHoje ? 'text-primary' : 'text-slate-400'}`}>{nomesDosDias[diaSemanaIndex]}</p>
+                              <p className={`text-lg font-bold ${ehHoje ? 'text-primary' : ''}`}>{numeroDoDia}</p>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
                   </div>
-                )}
-                
-                {/* Visualização de MÊS (Continua em Grade Simples) */}
-                {viewMode === 'mes' && (
-                  <div className="grid grid-cols-7 auto-rows-[100px]">
-                    {!isLoading && diasVisualizacao.map((dataObj, idx) => {
-                      if (!dataObj) return <div key={`empty-${idx}`} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 bg-slate-50/30 dark:bg-slate-800/20"></div>;
 
-                      const dataDaColuna = formataDataIso(dataObj);
-                      const sessoesDoDia = sessoes.filter(s => s.data === dataDaColuna);
+                  <div className="relative h-150 overflow-y-auto">
+                    {isLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 z-50">
+                        <p className="font-medium text-slate-500">Carregando cronograma...</p>
+                      </div>
+                    )}
+                    
+                    {viewMode === 'mes' && (
+                      <div className="grid grid-cols-7 auto-rows-[100px]">
+                        {!isLoading && diasVisualizacao.map((dataObj, idx) => {
+                          if (!dataObj) return <div key={`empty-${idx}`} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 bg-slate-50/30 dark:bg-slate-800/20"></div>;
 
-                      return (
-                        <div key={dataDaColuna} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 space-y-1 overflow-y-auto">
-                          <p className={`text-xs text-right font-semibold mb-1 ${dataDaColuna === hojeString ? 'text-primary' : 'text-slate-500'}`}>{dataObj.getDate()}</p>
-                          {sessoesDoDia.map(sessao => (
-                            <div key={sessao.id} className="p-1 rounded text-[10px] font-bold truncate shadow-sm cursor-pointer"
-                              style={{ backgroundColor: `${sessao.materia.hex}1A`, color: sessao.materia.hex, borderLeft: `2px solid ${sessao.materia.hex}` }}
-                            >
-                              {sessao.materia.nome}
+                          const dataDaColuna = formataDataIso(dataObj);
+                          const sessoesDoDia = sessoes.filter(s => s.data === dataDaColuna);
+
+                          return (
+                            <div key={dataDaColuna} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 space-y-1 overflow-y-auto">
+                              <p className={`text-xs text-right font-semibold mb-1 ${dataDaColuna === hojeString ? 'text-primary' : 'text-slate-500'}`}>{dataObj.getDate()}</p>
+                              {sessoesDoDia.map(sessao => (
+                                <div key={sessao.id} className="p-1 rounded text-[10px] font-bold truncate shadow-sm cursor-pointer"
+                                  style={{ backgroundColor: `${sessao.materia.hex}1A`, color: sessao.materia.hex, borderLeft: `2px solid ${sessao.materia.hex}` }}
+                                >
+                                  {sessao.materia.nome}
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {viewMode !== 'mes' && (
+                      <div className="flex relative bg-white dark:bg-slate-900" style={{ height: '1440px' }}>
+                        
+                        <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800 relative bg-white dark:bg-slate-900 z-10">
+                          {horasDoDia.map((hora) => (
+                            <div key={hora} className="h-15 relative border-b border-transparent">
+                              <span className="absolute -top-2.5 right-2 text-[10px] font-bold text-slate-400">{hora}</span>
                             </div>
                           ))}
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
 
-                {/* Visualização de DIA/SEMANA (Eixo Y com Horas) */}
-                {viewMode !== 'mes' && (
-                  <div className="flex relative bg-white dark:bg-slate-900" style={{ height: '1440px' }}> {/* 24h * 60px = 1440px */}
-                    
-                    {/* Eixo das Horas (Fixo na Esquerda) */}
-                    <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800 relative bg-white dark:bg-slate-900 z-10">
-                      {horasDoDia.map((hora) => (
-                        <div key={hora} className="h-15 relative border-b border-transparent">
-                          <span className="absolute -top-2.5 right-2 text-[10px] font-bold text-slate-400">{hora}</span>
+                        <div className="absolute top-0 right-0 left-16 bottom-0 flex flex-col pointer-events-none">
+                          {horasDoDia.map((hora) => (
+                            <div key={hora} className="h-15 border-b border-slate-100 dark:border-slate-800/30"></div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
 
-                    {/* Linhas de Grade de Fundo */}
-                    <div className="absolute top-0 right-0 left-16 bottom-0 flex flex-col pointer-events-none">
-                      {horasDoDia.map((hora) => (
-                        <div key={hora} className="h-15 border-b border-slate-100 dark:border-slate-800/30"></div>
-                      ))}
-                    </div>
+                        <div className="flex-1 flex relative">
+                          {!isLoading && diasVisualizacao.map((dataObj, idx) => {
+                            if (!dataObj) return null;
+                            const dataDaColuna = formataDataIso(dataObj);
+                            const sessoesDoDia = sessoes.filter(s => s.data === dataDaColuna);
 
-                    {/* Colunas dos Dias (Onde os eventos caem) */}
-                    <div className="flex-1 flex relative">
-                      {!isLoading && diasVisualizacao.map((dataObj, idx) => {
-                        if (!dataObj) return null;
-                        const dataDaColuna = formataDataIso(dataObj);
-                        const sessoesDoDia = sessoes.filter(s => s.data === dataDaColuna);
+                            return (
+                              <div key={idx} className={`flex-1 relative border-r border-slate-100 dark:border-slate-800/30 ${dataDaColuna === hojeString ? 'bg-primary/1' : ''}`}>
+                                {sessoesDoDia.map(sessao => {
+                                  const topoPixels = horaParaPixels(sessao.horaInicio);
+                                  const alturaPixels = duracaoParaPixels(sessao.horaInicio, sessao.horaFim);
 
-                        return (
-                          <div key={idx} className={`flex-1 relative border-r border-slate-100 dark:border-slate-800/30 ${dataDaColuna === hojeString ? 'bg-primary/1' : ''}`}>
-                            {sessoesDoDia.map(sessao => {
-                              // Cálculo Matemático da Posição do Card
-                              const topoPixels = horaParaPixels(sessao.horaInicio);
-                              const alturaPixels = duracaoParaPixels(sessao.horaInicio, sessao.horaFim);
-
-                              return (
-                                <div 
-                                  key={sessao.id} 
-                                  className="absolute left-1 right-1 rounded-lg shadow-sm p-2 flex flex-col justify-start overflow-hidden hover:scale-[1.01] transition-transform z-20 cursor-pointer"
-                                  style={{ 
-                                    top: `${topoPixels}px`, 
-                                    height: `${alturaPixels}px`, // Altura dinâmica
-                                    borderLeft: `4px solid ${sessao.materia.hex || '#3b82f6'}`,
-                                    backgroundColor: `${sessao.materia.hex}25` // Opacidade um pouquinho maior
-                                  }}
-                                >
-                                  <div className="flex items-center justify-between">
-                                    <p className="text-[10px] font-bold leading-none" style={{ color: sessao.materia.hex }}>
-                                      {calcularDuracaoTexto(sessao.horaInicio, sessao.horaFim)}
-                                    </p>
-                                    {sessao.concluido && (
-                                      <span className="material-symbols-outlined text-[12px] leading-none" style={{ color: sessao.materia.hex }}>
-                                        check_circle
-                                      </span>
-                                    )}
-                                  </div>
-                                  <p className="text-xs font-bold truncate mt-1 leading-tight" title={sessao.materia.nome}>
-                                    {sessao.materia.nome}
-                                  </p>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        );
-                      })}
-                    </div>
+                                  return (
+                                    <div 
+                                      key={sessao.id} 
+                                      className="absolute left-1 right-1 rounded-lg shadow-sm p-2 flex flex-col justify-start overflow-hidden hover:scale-[1.01] transition-transform z-20 cursor-pointer"
+                                      style={{ 
+                                        top: `${topoPixels}px`, 
+                                        height: `${alturaPixels}px`,
+                                        borderLeft: `4px solid ${sessao.materia.hex || '#3b82f6'}`,
+                                        backgroundColor: `${sessao.materia.hex}25`
+                                      }}
+                                    >
+                                      <div className="flex items-center justify-between">
+                                        <p className="text-[10px] font-bold leading-none" style={{ color: sessao.materia.hex }}>
+                                          {calcularDuracaoTexto(sessao.horaInicio, sessao.horaFim)}
+                                        </p>
+                                        {sessao.concluido && (
+                                          <span className="material-symbols-outlined text-[12px] leading-none" style={{ color: sessao.materia.hex }}>
+                                            check_circle
+                                          </span>
+                                        )}
+                                      </div>
+                                      <p className="text-xs font-bold truncate mt-1 leading-tight" title={sessao.materia.nome}>
+                                        {sessao.materia.nome}
+                                      </p>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Lado Direito: Widgets (Mantidos) */}
-          <div className="w-80 space-y-6">
+          <div className="w-full lg:w-80 shrink-0 space-y-6">
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg">Tarefas de Hoje</h3>
