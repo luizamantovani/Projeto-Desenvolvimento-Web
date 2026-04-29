@@ -10,6 +10,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
+  const user = localStorage.getItem('@Agendo:user');
+  const userName = user ? JSON.parse(user).nome : 'Usuário';
+
   return (
     <div className="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-200">
       {/* Sidebar */}
@@ -80,18 +83,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <button className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative">
-              <span className="material-symbols-outlined">notifications</span>
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark"></span>
-            </button>
             <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
             <div className="flex items-center gap-3">
               <div className="text-right">
-                <p className="text-sm font-bold leading-none">Alex Johnson</p>
-                <p className="text-[11px] text-slate-500">Ciência da Computação</p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center text-slate-500">
-                <span className="material-symbols-outlined">person</span>
+                <p className="text-sm font-bold leading-none">{userName}</p>
               </div>
             </div>
           </div>
