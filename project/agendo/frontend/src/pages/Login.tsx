@@ -25,7 +25,15 @@ export const Login: React.FC = () => {
       localStorage.setItem('@Agendo:token', data.token);
       localStorage.setItem('@Agendo:user', JSON.stringify(data.usuarioLoginResponse));
 
-      navigate('/configurar');
+      const possuiCronograma = data.possuiCronograma;
+
+      if (possuiCronograma) {
+        navigate('/cronograma');
+      }
+      else {
+        navigate('/configurar');
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setErrorMessage(error.message || 'Erro de conexão com o servidor. Tente novamente.');
