@@ -3,6 +3,7 @@ package com.devweb.agendo.service;
 import com.devweb.agendo.model.Email;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -14,7 +15,10 @@ import org.thymeleaf.context.Context;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private final TemplateEngine templateEngine; // 1. Injetar o motor do Thymeleaf
+    private final TemplateEngine templateEngine;
+
+    @Value("${spring.mail.username}")
+    private String remetente;
 
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
@@ -33,12 +37,14 @@ public class EmailService {
 
             String htmlTemplate = templateEngine.process("email-template", context);
 
-            helper.setFrom("noreply@email.com");
+            helper.setFrom(remetente);
             helper.setTo(email.to());
             helper.setSubject(email.subject());
             helper.setText(htmlTemplate, true);
 
             mailSender.send(message);
+
+            System.out.println("Email enviado com sucesso!");
 
         } catch (MessagingException e) {
             System.err.println("Falha ao enviar e-mail: " + e.getMessage());
