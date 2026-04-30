@@ -1,28 +1,48 @@
 package com.devweb.agendo.service;
 
 import com.devweb.agendo.model.Email;
-import org.springframework.mail.SimpleMailMessage;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine; // 1. Injetar o motor do Thymeleaf
 
-    public EmailService(JavaMailSender mailSender) {
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
+    @Async
     public void sendEmail(Email email) {
-        var message = new SimpleMailMessage();
-        message.setFrom("noreply@email.com");
-        message.setTo(email.to());
-        message.setSubject(email.subject());
-        message.setText(email.body());
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        mailSender.send(message);
+            Context context = new Context();
 
+            context.setVariable("nomeUsuario", email.body());
 
+            String htmlTemplate = templateEngine.process("email-template", context);
+
+            helper.setFrom("noreply@email.com");
+            helper.setTo(email.to());
+            helper.setSubject(email.subject());
+            helper.setText(htmlTemplate, true);
+
+            mailSender.send(message);
+
+        } catch (MessagingException e) {
+            System.err.println("Falha ao enviar e-mail: " + e.getMessage());
+            throw new RuntimeException("Erro ao enviar e-mail", e);
+        }
     }
 }

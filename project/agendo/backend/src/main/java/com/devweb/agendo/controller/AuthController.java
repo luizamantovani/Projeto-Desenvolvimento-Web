@@ -78,7 +78,7 @@ public class AuthController {
         Email email = new Email(
                 novoUsuario.getEmail(),
                 "Bem-vindo ao Agendo!",
-                String.format("Olá %s,\n\nObrigado por se registrar no Agendo! Estamos felizes em tê-lo conosco.\n\nAtenciosamente,\nEquipe Agendo", novoUsuario.getNome())
+                novoUsuario.getNome()
         );
         emailService.sendEmail(email);
 
