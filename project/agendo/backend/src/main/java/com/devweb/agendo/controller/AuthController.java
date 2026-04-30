@@ -7,6 +7,7 @@ import com.devweb.agendo.dto.response.LoginResponse;
 import com.devweb.agendo.dto.response.RegistrarUsuarioResponse;
 import com.devweb.agendo.dto.response.UsuarioLoginResponse;
 import com.devweb.agendo.model.Usuario;
+import com.devweb.agendo.repository.SessaoRepository;
 import com.devweb.agendo.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 //import org.springframework.http.HttpHeaders;
@@ -24,12 +25,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
+    private final SessaoRepository sessaoRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenConfig tokenConfig;
 
-    public AuthController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenConfig tokenConfig) {
+    public AuthController(UsuarioRepository usuarioRepository, SessaoRepository sessaoRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenConfig tokenConfig) {
         this.usuarioRepository = usuarioRepository;
+        this.sessaoRepository = sessaoRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.tokenConfig = tokenConfig;
@@ -44,7 +47,8 @@ public class AuthController {
         String token = tokenConfig.generateToken(usuario);
 
         UsuarioLoginResponse usuarioLoginResponse = new UsuarioLoginResponse(usuario.getId(), usuario.getNome(), usuario.getEmail());
-        return ResponseEntity.ok(new LoginResponse(token,  usuarioLoginResponse));
+        Boolean possuiCronograma = sessaoRepository.existsSessaoByUsuario(usuario);
+        return ResponseEntity.ok(new LoginResponse(token, usuarioLoginResponse,  possuiCronograma));
 
 //        ResponseCookie cookie = ResponseCookie.from("token", token)
 //                .httpOnly(true)
