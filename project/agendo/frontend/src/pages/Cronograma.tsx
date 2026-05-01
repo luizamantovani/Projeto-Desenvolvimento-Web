@@ -25,6 +25,7 @@ export const Cronograma: React.FC = () => {
   const [sessoes, setSessoes] = useState<Sessao[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('semana');
+  const [sessaoSelecionada, setSessaoSelecionada] = useState<Sessao | null>(null);
 
   useEffect(() => {
     const fetchCronograma = async () => {
@@ -180,10 +181,7 @@ export const Cronograma: React.FC = () => {
       }}
     >
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-
-
         <div className="flex-1 space-y-6 min-w-0">
-
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h2>
@@ -201,7 +199,6 @@ export const Cronograma: React.FC = () => {
               <div className="min-w-150 lg:min-w-full flex flex-col">
                 <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
                   {viewMode !== 'mes' && <div className="w-16 shrink-0 border-r border-slate-200 dark:border-slate-800"></div>}
-
                   <div className={`flex-1 grid ${viewMode === 'mes' ? 'grid-cols-7' : `grid-cols-${diasVisualizacao.length}`}`}>
                     {viewMode === 'mes' ? (
                       nomesDosDias.map((dia, idx) => (
@@ -246,8 +243,11 @@ export const Cronograma: React.FC = () => {
                           <div key={dataDaColuna} className="border-r border-b border-slate-200 dark:border-slate-800 p-2 space-y-1 overflow-y-auto">
                             <p className={`text-xs text-right font-semibold mb-1 ${dataDaColuna === hojeString ? 'text-primary' : 'text-slate-500'}`}>{dataObj.getDate()}</p>
                             {sessoesDoDia.map(sessao => (
-                              <div key={sessao.id} className="p-1 rounded text-[10px] font-bold truncate shadow-sm cursor-pointer"
+                              <div
+                                key={sessao.id}
+                                className="p-1 rounded text-[10px] font-bold truncate shadow-sm cursor-pointer"
                                 style={{ backgroundColor: `${sessao.materia.hex}1A`, color: sessao.materia.hex, borderLeft: `2px solid ${sessao.materia.hex}` }}
+                                onClick={() => setSessaoSelecionada(sessao)}
                               >
                                 {sessao.materia.nome}
                               </div>
@@ -290,6 +290,7 @@ export const Cronograma: React.FC = () => {
                                 return (
                                   <div
                                     key={sessao.id}
+                                    onClick={() => setSessaoSelecionada(sessao)}
                                     className="absolute inset-x-1 flex flex-col gap-0.5 overflow-hidden rounded-r-lg rounded-l-sm border border-slate-200 dark:border-slate-700/50 p-2 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md cursor-pointer group z-20"
                                     style={{
                                       top: `${topoPixels}px`,
@@ -394,6 +395,99 @@ export const Cronograma: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {sessaoSelecionada && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div
+            className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-md overflow-hidden transform animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header com a cor da matéria */}
+            <div
+              className="h-2 w-full"
+              style={{ backgroundColor: sessaoSelecionada.materia.hex }}
+            />
+
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                    Detalhes da Sessão
+                  </h3>
+                  <p className="text-sm text-slate-500">Informações detalhadas do seu bloco de foco.</p>
+                </div>
+                <button
+                  onClick={() => setSessaoSelecionada(null)}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+                    style={{ backgroundColor: sessaoSelecionada.materia.hex }}
+                  >
+                    <span className="material-symbols-outlined">book</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Matéria</p>
+                    <p className="font-bold text-slate-700 dark:text-slate-200">{sessaoSelecionada.materia.nome}</p>
+                  </div>
+                </div>
+
+                {/* NOVO: Grid de 3 colunas para acomodar a Data, Horário e Status */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 border border-slate-100 dark:border-slate-800 rounded-xl flex flex-col justify-center">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">Data</p>
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {/* Formata a data de YYYY-MM-DD para DD/MM/YYYY */}
+                      {sessaoSelecionada.data ? sessaoSelecionada.data.split('-').reverse().join('/') : '---'}
+                    </p>
+                  </div>
+
+                  <div className="p-3 border border-slate-100 dark:border-slate-800 rounded-xl flex flex-col justify-center">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase">Horário</p>
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                      {sessaoSelecionada.horaInicio.slice(0, 5)} - {sessaoSelecionada.horaFim.slice(0, 5)}
+                    </p>
+                  </div>
+
+                  <div className="p-3 border border-slate-100 dark:border-slate-800 rounded-xl flex flex-col justify-center items-start">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Status</p>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${sessaoSelecionada.status === 'CONCLUIDA'
+                      ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400'
+                      : 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400'
+                      }`}>
+                      {sessaoSelecionada.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex gap-3">
+                <button
+                  onClick={() => {
+                    alternarStatusSessao(sessaoSelecionada.id);
+                    setSessaoSelecionada(null); // Fecha após marcar
+                  }}
+                  className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center justify-center gap-2 ${sessaoSelecionada.status === 'CONCLUIDA'
+                    ? 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                    : 'bg-primary text-white hover:bg-primary-dark shadow-primary/20'
+                    }`}
+                >
+                  <span className="material-symbols-outlined text-[20px]">
+                    {sessaoSelecionada.status === 'CONCLUIDA' ? 'restart_alt' : 'check_circle'}
+                  </span>
+                  {sessaoSelecionada.status === 'CONCLUIDA' ? 'Refazer Sessão' : 'Marcar como Concluída'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
