@@ -6,6 +6,7 @@ import com.devweb.agendo.model.Materia;
 import com.devweb.agendo.model.Sessao;
 import com.devweb.agendo.model.Usuario;
 import com.devweb.agendo.service.CronogramaService;
+import com.devweb.agendo.service.SessaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,11 @@ public class CronogramaController {
 
     private final CronogramaService cronogramaService;
 
-    public CronogramaController(CronogramaService cronogramaService) {
+    private final SessaoService sessaoService;
+
+    public CronogramaController(CronogramaService cronogramaService, SessaoService sessaoService) {
         this.cronogramaService = cronogramaService;
+        this.sessaoService = sessaoService;
     }
 
     @GetMapping
@@ -33,7 +37,7 @@ public class CronogramaController {
                         s.getData(),
                         s.getHoraInicio(),
                         s.getHoraFim(),
-                        s.getConcluido(),
+                        s.isConcluido(),
                         s.getStatus().name(),
                         new SessaoResponse.MateriaResumo(
                                 s.getMateria().getId(),
@@ -47,7 +51,7 @@ public class CronogramaController {
 
     @PostMapping("/gerar")
     public ResponseEntity<List<SessaoResponse>> gerarPlano(@RequestBody @Valid GerarCronogramaRequest request,
-                                                   @AuthenticationPrincipal Usuario usuarioLogado) {
+                                                           @AuthenticationPrincipal Usuario usuarioLogado) {
 
         List<Materia> materias = request.materias().stream().map(dto -> {
             Materia m = new Materia();
@@ -80,7 +84,7 @@ public class CronogramaController {
                         s.getData(),
                         s.getHoraInicio(),
                         s.getHoraFim(),
-                        s.getConcluido(),
+                        s.isConcluido(),
                         s.getStatus().name(),
                         new SessaoResponse.MateriaResumo(
                                 s.getMateria().getId(),
@@ -90,5 +94,15 @@ public class CronogramaController {
                 )).toList();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PatchMapping("/{id}/concluir")
+    public ResponseEntity<Void> alternarStatus(@PathVariable Long id,
+                                               @AuthenticationPrincipal Usuario usuarioLogado) {
+        Long usuarioLogadoId = usuarioLogado.getId();
+
+        sessaoService.alternarStatusConclusao(id, usuarioLogadoId);
+
+        return ResponseEntity.noContent().build();
     }
 }
