@@ -26,8 +26,10 @@ public class SessaoService {
 
         if (sessao.getStatus() == StatusTarefa.CONCLUIDA) {
             sessao.setStatus(StatusTarefa.PENDENTE);
+            sessao.setConcluido(false);
         } else {
             sessao.setStatus(StatusTarefa.CONCLUIDA);
+            sessao.setConcluido(true);
         }
 
         sessaoRepository.save(sessao);
