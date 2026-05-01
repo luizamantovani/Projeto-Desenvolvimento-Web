@@ -26,10 +26,10 @@ public class Sessao {
 
     private LocalTime horaFim;
 
-    private Boolean concluido = false;
+    private boolean concluido = false;
 
     @Enumerated(EnumType.STRING)
-    private StatusTarefa status;
+    private StatusTarefa status = StatusTarefa.PENDENTE;
 
     @ManyToOne
     @JoinColumn(name = "materia_id")

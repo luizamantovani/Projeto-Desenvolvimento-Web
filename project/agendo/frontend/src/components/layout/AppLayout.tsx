@@ -11,7 +11,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
       <div className="flex h-full grow flex-col">
         <Cabecalho />
-        <main className="mx-auto w-full max-w-[1200px] flex-1 p-4 md:p-10">
+        <main className="mx-auto w-full max-w-300 flex-1 p-4 md:p-10">
           {children}
         </main>
         <Rodape />
