@@ -111,12 +111,21 @@ public class CronogramaService {
                 LocalTime horaAtual = turno.inicio();
                 LocalTime limiteTurno = turno.fim();
 
-                while (horaAtual.plusMinutes(TEMPO_ESTUDO_MIN).isBefore(limiteTurno) ||
-                        horaAtual.plusMinutes(TEMPO_ESTUDO_MIN).equals(limiteTurno)) {
+                long minutosDisponiveis = java.time.Duration.between(horaAtual, limiteTurno).toMinutes();
+
+                if (minutosDisponiveis < 0) {
+                    minutosDisponiveis += 24 * 60;
+                }
+
+                long minutosGastos = 0;
+
+                while (minutosGastos + TEMPO_ESTUDO_MIN <= minutosDisponiveis) {
 
                     LocalTime horaFimFoco = horaAtual.plusMinutes(TEMPO_ESTUDO_MIN);
                     slots.add(new SlotTempo(data, horaAtual, horaFimFoco));
+
                     horaAtual = horaAtual.plusMinutes(TEMPO_SESSAO_ESTUDO);
+                    minutosGastos += TEMPO_SESSAO_ESTUDO;
                 }
             }
         }
