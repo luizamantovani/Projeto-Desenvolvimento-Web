@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 interface Materia {
   id: number;
   nome: string;
@@ -30,7 +32,7 @@ export const Cronograma: React.FC = () => {
         setIsLoading(true);
         const token = localStorage.getItem('@Agendo:token'); 
         
-        const resposta = await fetch('http://localhost:8080/cronogramas', {
+        const resposta = await fetch(`${API_URL}/cronogramas`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -42,8 +44,8 @@ export const Cronograma: React.FC = () => {
 
         const data = await resposta.json();
         setSessoes(data);
-      } catch {
-        console.error('Não foi possível carregar seu cronograma.');
+      } catch (error) {
+        console.error('Não foi possível carregar seu cronograma.', error);
       } finally {
         setIsLoading(false);
       }

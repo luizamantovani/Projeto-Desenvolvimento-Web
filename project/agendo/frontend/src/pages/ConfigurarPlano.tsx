@@ -5,6 +5,9 @@ import Materias from '../components/Materias';
 import Calendar from '../components/Calender';
 import Disponibility from '../components/Disponibility';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+
 type Horario = {
   inicio: string;
   fim: string;
@@ -64,7 +67,7 @@ export const ConfigurarPlano: React.FC = () => {
     setAlertInfo(null);
 
     try {
-      const resposta = await fetch('http://localhost:8080/cronogramas/gerar', {
+      const resposta = await fetch(`${API_URL}/cronogramas/gerar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
