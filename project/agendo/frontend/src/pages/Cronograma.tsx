@@ -290,27 +290,42 @@ export const Cronograma: React.FC = () => {
                                 return (
                                   <div
                                     key={sessao.id}
-                                    className="absolute left-1 right-1 rounded-lg shadow-sm p-2 flex flex-col justify-start overflow-hidden hover:scale-[1.01] transition-transform z-20 cursor-pointer"
+                                    className="absolute inset-x-1 flex flex-col gap-0.5 overflow-hidden rounded-r-lg rounded-l-sm border border-slate-200 dark:border-slate-700/50 p-2 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md cursor-pointer group z-20"
                                     style={{
                                       top: `${topoPixels}px`,
                                       height: `${alturaPixels}px`,
-                                      borderLeft: `4px solid ${sessao.materia.hex || '#3b82f6'}`,
-                                      backgroundColor: `${sessao.materia.hex}25`
+                                      minHeight: '48px', // Impede que o bloco fique esmagado
+                                      backgroundColor: `${sessao.materia.hex}15`, // Fundo mais suave
+                                      borderLeftWidth: '4px',
+                                      borderLeftColor: sessao.materia.hex || '#3b82f6',
                                     }}
                                   >
-                                    <div className="flex items-center justify-between">
-                                      <p className="text-[10px] font-bold leading-none" style={{ color: sessao.materia.hex }}>
-                                        {calcularDuracaoTexto(sessao.horaInicio, sessao.horaFim)}
-                                      </p>
+                                    {/* Header do Bloco: Nome da Matéria + Ícone */}
+                                    <div className="flex w-full items-start justify-between">
+                                      <span
+                                        className="truncate text-sm font-bold leading-tight"
+                                        style={{ color: sessao.materia.hex }}
+                                        title={sessao.materia.nome}
+                                      >
+                                        {sessao.materia.nome}
+                                      </span>
+
                                       {sessao.concluido && (
-                                        <span className="material-symbols-outlined text-[12px] leading-none" style={{ color: sessao.materia.hex }}>
+                                        <span className="material-symbols-outlined text-[16px] leading-none mt-0.5" style={{ color: sessao.materia.hex }}>
                                           check_circle
                                         </span>
                                       )}
                                     </div>
-                                    <p className="text-xs font-bold truncate mt-1 leading-tight" title={sessao.materia.nome}>
-                                      {sessao.materia.nome}
-                                    </p>
+
+                                    {/* Horário */}
+                                    <div
+                                      className="flex items-center text-[11px] font-medium opacity-80 group-hover:opacity-100 transition-opacity"
+                                      style={{ color: sessao.materia.hex }}
+                                    >
+                                      <span>
+                                        {calcularDuracaoTexto(sessao.horaInicio, sessao.horaFim)}
+                                      </span>
+                                    </div>
                                   </div>
                                 );
                               })}
@@ -342,8 +357,7 @@ export const Cronograma: React.FC = () => {
                 <li key={tarefa.id} className="flex items-center gap-3">
                   <div
                     onClick={() => alternarStatusSessao(tarefa.id)}
-                    className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-colors ${
-                      tarefa.status === 'CONCLUIDA' ? 'bg-primary border-2 border-primary' : 'border-2 border-slate-300'
+                    className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-colors ${tarefa.status === 'CONCLUIDA' ? 'bg-primary border-2 border-primary' : 'border-2 border-slate-300'
                       }`}
                   >
                     {tarefa.status === 'CONCLUIDA' && (
