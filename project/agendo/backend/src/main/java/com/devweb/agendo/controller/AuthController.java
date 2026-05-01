@@ -6,9 +6,11 @@ import com.devweb.agendo.dto.request.RegistroUsuarioRequest;
 import com.devweb.agendo.dto.response.LoginResponse;
 import com.devweb.agendo.dto.response.RegistrarUsuarioResponse;
 import com.devweb.agendo.dto.response.UsuarioLoginResponse;
+import com.devweb.agendo.model.Email;
 import com.devweb.agendo.model.Usuario;
 import com.devweb.agendo.repository.SessaoRepository;
 import com.devweb.agendo.repository.UsuarioRepository;
+import com.devweb.agendo.service.EmailService;
 import jakarta.validation.Valid;
 //import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,13 +31,15 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenConfig tokenConfig;
+    private final EmailService emailService;
 
-    public AuthController(UsuarioRepository usuarioRepository, SessaoRepository sessaoRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenConfig tokenConfig) {
+    public AuthController(UsuarioRepository usuarioRepository, SessaoRepository sessaoRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenConfig tokenConfig, EmailService emailService) {
         this.usuarioRepository = usuarioRepository;
         this.sessaoRepository = sessaoRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.tokenConfig = tokenConfig;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -70,6 +74,13 @@ public class AuthController {
         novoUsuario.setEmail(request.email());
         novoUsuario.setSenha(passwordEncoder.encode(request.senha()));
         usuarioRepository.save(novoUsuario);
+
+        Email email = new Email(
+                novoUsuario.getEmail(),
+                "Bem-vindo ao Agendo!",
+                novoUsuario.getNome()
+        );
+        emailService.sendEmail(email);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new RegistrarUsuarioResponse(novoUsuario.getNome(), novoUsuario.getEmail()));
     }
