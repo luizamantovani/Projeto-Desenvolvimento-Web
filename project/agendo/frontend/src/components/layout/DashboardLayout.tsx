@@ -4,9 +4,15 @@ import { ThemeToggle } from '../ui/ThemeToggle';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  // Nova prop opcional para receber os dados de qualquer página
+  progresso?: {
+    total: number;
+    concluidas: number;
+    percentual: number;
+  };
 }
 
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, progresso }) => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
 
@@ -28,13 +34,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
           </Link>
         </div>
         <nav className="flex-1 px-2 md:px-4 space-y-2">
-          <Link
+          {/* <Link
             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive('/progresso') ? 'bg-primary/10 text-primary font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             to="/progresso"
           >
             <span className="material-symbols-outlined">dashboard</span>
             <span className="hidden md:inline">Dashboard</span>
-          </Link>
+          </Link> */}
           <Link
             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive('/cronograma') ? 'bg-primary/10 text-primary font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             to="/cronograma"
@@ -42,14 +48,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             <span className="material-symbols-outlined">calendar_month</span>
             <span className="hidden md:inline">Cronograma</span>
           </Link>
-          <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+          {/* <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
             <span className="material-symbols-outlined">book</span>
             <span className="hidden md:inline">Cursos</span>
           </a>
           <a className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
             <span className="material-symbols-outlined">folder</span>
             <span className="hidden md:inline">Recursos</span>
-          </a>
+          </a> */}
           <Link
             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive('/configurar') ? 'bg-primary/10 text-primary font-medium' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             to="/configurar"
@@ -58,18 +64,26 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             <span className="hidden md:inline">Configurações</span>
           </Link>
         </nav>
+        
+        {/* Nova seção dinâmica do Rastreador de Progresso */}
         <div className="hidden md:block p-4 mt-auto">
-          <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Rastreador de Progresso</p>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium">Meta Semanal</span>
-              <span className="text-sm font-bold text-primary">75%</span>
+          {/* Só exibe o card se a página atual enviar a prop 'progresso' */}
+          {progresso && (
+            <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
+              <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Rastreador de Progresso</p>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-medium">Meta Semanal</span>
+                <span className="text-sm font-bold text-primary">{progresso.percentual}%</span>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                <div 
+                  className="bg-primary h-2 rounded-full transition-all duration-500" 
+                  style={{ width: `${progresso.percentual}%` }}
+                ></div>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-2">{progresso.concluidas}/{progresso.total} blocos concluídos</p>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-              <div className="bg-primary h-2 rounded-full" style={{ width: '75%' }}></div>
-            </div>
-            <p className="text-[11px] text-slate-500 mt-2">12/16 blocos concluídos</p>
-          </div>
+          )}
         </div>
       </aside>
 

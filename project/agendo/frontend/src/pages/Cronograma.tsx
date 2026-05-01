@@ -144,8 +144,41 @@ export const Cronograma: React.FC = () => {
   const tarefasDeHoje = sessoes.filter(sessao => sessao.data === hojeString);
   const sessoesPendentes = tarefasDeHoje.filter(s => !s.concluido).length;
 
+  const estatisticas = React.useMemo(() => {
+    const totalSessoes = sessoes.length;
+    const concluidas = sessoes.filter(s => s.status === 'CONCLUIDA').length;
+
+    // Percentagem Geral
+    const percentagemGeral = totalSessoes > 0
+      ? Math.round((concluidas / totalSessoes) * 100)
+      : 0;
+
+    // Estatísticas de Hoje
+    const sessoesHoje = sessoes.filter(s => s.data === hojeString);
+    const totalHoje = sessoesHoje.length;
+    const concluidasHoje = sessoesHoje.filter(s => s.status === 'CONCLUIDA').length;
+    const percentagemHoje = totalHoje > 0
+      ? Math.round((concluidasHoje / totalHoje) * 100)
+      : 0;
+
+    return {
+      totalSessoes,
+      concluidas,
+      percentagemGeral,
+      totalHoje,
+      concluidasHoje,
+      percentagemHoje
+    };
+  }, [sessoes, hojeString]);
+
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      progresso={{
+        total: estatisticas.totalSessoes,
+        concluidas: estatisticas.concluidas,
+        percentual: estatisticas.percentagemGeral
+      }}
+    >
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
 
 
@@ -309,9 +342,13 @@ export const Cronograma: React.FC = () => {
                 <li key={tarefa.id} className="flex items-center gap-3">
                   <div
                     onClick={() => alternarStatusSessao(tarefa.id)}
-                    className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-colors ${tarefa.status === 'CONCLUIDA' ? 'bg-primary border-2 border-primary' : 'border-2 border-slate-300 dark:border-slate-600 hover:border-primary'
-                      }`}>
-                    {tarefa.status === 'CONCLUIDA' && <span className="material-symbols-outlined text-white text-[16px]">check</span>}
+                    className={`w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-colors ${
+                      tarefa.status === 'CONCLUIDA' ? 'bg-primary border-2 border-primary' : 'border-2 border-slate-300'
+                      }`}
+                  >
+                    {tarefa.status === 'CONCLUIDA' && (
+                      <span className="material-symbols-outlined text-white text-[16px]">check</span>
+                    )}
                   </div>
                   <div className={`flex-1 ${tarefa.status === 'CONCLUIDA' ? 'opacity-50' : ''}`}>
                     <p className={`text-sm font-medium ${tarefa.status === 'CONCLUIDA' ? 'line-through' : ''}`}>
@@ -327,15 +364,18 @@ export const Cronograma: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20">
               <p className="text-[10px] font-bold text-primary uppercase">Sessões Totais</p>
-              <p className="text-2xl font-black">{sessoes.length}</p>
-              <p className="text-[10px] text-primary/60 mt-1">Geradas</p>
+              <p className="text-2xl font-black">{estatisticas.totalSessoes}</p>
+              <p className="text-[10px] text-primary/60 mt-1">Geradas no total</p>
             </div>
             <div className="bg-emerald-500/10 rounded-2xl p-4 border border-emerald-500/20">
-              <p className="text-[10px] font-bold text-emerald-600 uppercase">Foco</p>
-              <p className="text-2xl font-black">
-                {sessoes.length > 0 ? Math.round((sessoes.filter(s => s.concluido).length / sessoes.length) * 100) : 0}%
-              </p>
-              <p className="text-[10px] text-emerald-600/60 mt-1">Progresso geral</p>
+              <p className="text-[10px] font-bold text-emerald-600 uppercase">Progresso Geral</p>
+              <p className="text-2xl font-black">{estatisticas.percentagemGeral}%</p>
+              <div className="w-full bg-emerald-200 h-1.5 rounded-full mt-2">
+                <div
+                  className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500"
+                  style={{ width: `${estatisticas.percentagemGeral}%` }}
+                />
+              </div>
             </div>
           </div>
         </div>
