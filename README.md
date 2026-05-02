@@ -64,7 +64,7 @@ O projeto segue uma arquitetura em camadas com separação clara entre o cliente
 | nome         | String   | Nome da matéria             |
 | dificuldade  | Integer  | Nível de dificuldade (1-10)  |
 | importância  | Integer  | Peso da matéria (1-10)       |
-| cor_rex      | String   | Código hex da cor da tarefa |
+| cor_hex      | String   | Código hex da cor da tarefa |
 | usuario_id   | Long     | Relação com o usuário       |
 
 ---
@@ -110,13 +110,13 @@ O projeto segue uma arquitetura em camadas com separação clara entre o cliente
 - Java JDK 21
 - Maven
 - Git
-- PostgresSQL rodando localmente
+- PostgreSQL rodando localmente
 
 ---
 
 ### 📥 Clonar o repositório
 ```bash
-git clone [https://github.com/seu-usuario/agendo.git](https://github.com/luizamantovani/Projeto-Desenvolvimento-Web)
+git clone [https://github.com/seu-usuario/agendo.git](https://github.com/luizamantovani/Projeto-Desenvolvimento-Web)(https://github.com/luizamantovani/Projeto-Desenvolvimento-Web)
 cd agendo
 ```
 
@@ -133,6 +133,11 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=agendo
 SECRET_KEY=sua_chave_secreta_jwt
+
+MAIL_HOST=seu_servico_smtp
+MAIL_PORT=porta
+MAIL_USERNAME=seu_usuario
+MAIL_PASSWORD=sua_senha_de_app_de_usuario
 ```
 Para rodar a aplicação:
 
@@ -155,7 +160,7 @@ A API estará disponível em `http://localhost:8080`
 ```bash
 cd frontend
 npm install
-npx expo start
+npm run dev
 ```
 O site estará disponível no endereço local fornecido pelo Vite (geralmente `http://localhost:5173`)
 
