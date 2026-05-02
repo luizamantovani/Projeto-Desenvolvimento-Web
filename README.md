@@ -101,6 +101,8 @@ O projeto segue uma arquitetura em camadas com separação clara entre o cliente
 ### 🗄️ Banco de Dados
 - PostgreSQL 
 
+### 🛠️ DevOps
+- Docker / Docker Compose 
 ---
 
 ## 🚀 Guia de Setup
@@ -116,7 +118,7 @@ O projeto segue uma arquitetura em camadas com separação clara entre o cliente
 
 ### 📥 Clonar o repositório
 ```bash
-git clone [https://github.com/seu-usuario/agendo.git](https://github.com/luizamantovani/Projeto-Desenvolvimento-Web)(https://github.com/luizamantovani/Projeto-Desenvolvimento-Web)
+git clone https://github.com/luizamantovani/Projeto-Desenvolvimento-Web agendo
 cd agendo
 ```
 
@@ -132,12 +134,13 @@ DB_PASSWORD=sua_senha
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=agendo
+
 SECRET_KEY=sua_chave_secreta_jwt
 
-MAIL_HOST=seu_servico_smtp
-MAIL_PORT=porta
-MAIL_USERNAME=seu_usuario
-MAIL_PASSWORD=sua_senha_de_app_de_usuario
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=seu_email@gmail.com
+MAIL_PASSWORD=sua_app_password
 ```
 Para rodar a aplicação:
 
@@ -166,6 +169,50 @@ O site estará disponível no endereço local fornecido pelo Vite (geralmente `h
 
 ---
 
+### 🐳 Executando com Docker Compose
+Esta é a forma mais rápida de subir o ambiente completo.
+Certifique-se de ter um arquivo .env na raiz do projeto configurado.
+
+#### 1. Configurar o `.env`
+Na raiz do projeto, criar um arquivo `.env` e inserir o seguinte substituindo os valores:
+```
+# Banco de Dados
+DB_NAME=agendo
+DB_USERNAME=postgres
+DB_PASSWORD=sua_senha_segura
+DB_PORT=5432
+
+# Autenticação Backend
+SECRET_KEY=sua_chave_secreta_jwt_aqui
+
+# Configurações de E-mail (Backend)
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=seu_email@gmail.com
+MAIL_PASSWORD=sua_app_password
+
+# Frontend
+VITE_API_URL=http://localhost:8080
+```
+
+#### 2. Subir os Containers
+No terminal, na raiz do projeto, execute:
+```
+docker compose up -d --build
+```
+
+#### 3. Configuração do Compose
+O arquivo docker-compose.yml orquestra os seguintes serviços:
+- db: PostgreSQL 16.
+- backend: API Spring Boot (disponível em :8080).
+- frontend: React + Nginx (disponível em :80).
+
+#### 4. Encerrar o Ambiente
+```
+docker compose down
+```
+
+---
 ## 📌 Possíveis Melhorias Futuras
 
 - [ ] Envio de notificações e resumo do cronograma por E-mail.
