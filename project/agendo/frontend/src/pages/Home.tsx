@@ -29,6 +29,7 @@ export const Home: React.FC = () => {
         </div>
       </header>
 
+      <main>
       <section className="relative pt-20 pb-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
@@ -95,6 +96,7 @@ export const Home: React.FC = () => {
           </Link>
         </div>
       </section>
+      </main>
 
       <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

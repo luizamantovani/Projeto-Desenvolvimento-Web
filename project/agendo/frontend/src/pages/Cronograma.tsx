@@ -184,7 +184,7 @@ export const Cronograma: React.FC = () => {
         <div className="flex-1 space-y-6 min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h2>
+              <h1 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h1>
               <p className="text-slate-500 text-sm">Gerencie seus blocos de estudo semanais e sessões de foco profundo.</p>
             </div>
             <div className="flex w-full md:w-auto items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
