@@ -49,25 +49,21 @@ export const ConfigurarPlano: React.FC = () => {
     { inicio: "14:00", fim: "18:00" }
   ]);
 
-  // Estados para gerir o carregamento e os alertas
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingConfig, setIsLoadingConfig] = useState(true);
   const [alertInfo, setAlertInfo] = useState<{ tipo: 'sucesso' | 'erro'; mensagem: string } | null>(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
 
-  // On Load: buscar configuração salva no backend
   useEffect(() => {
     const carregarConfiguracao = async () => {
       try {
         const config = await buscarConfiguracao();
         if (config) {
-          // Converter data de YYYY-MM-DD para DD/MM/YYYY para o Calendar
           if (config.dataLimite) {
             const partes = config.dataLimite.split('-');
             setDataSelecionada(`${partes[2]}/${partes[1]}/${partes[0]}`);
           }
 
-          // Converter dias numéricos de volta para labels
           if (config.diasSemanaDisponiveis && config.diasSemanaDisponiveis.length > 0) {
             const diasLabels = config.diasSemanaDisponiveis
               .map(num => numeroParaDia[num])
@@ -75,7 +71,6 @@ export const ConfigurarPlano: React.FC = () => {
             setDiasSelecionados(diasLabels);
           }
 
-          // Mapear turnos (remover possíveis segundos da resposta "HH:mm:ss" -> "HH:mm")
           if (config.turnos && config.turnos.length > 0) {
             setHorarios(config.turnos.map(t => ({
               inicio: t.inicio.slice(0, 5),
@@ -83,7 +78,6 @@ export const ConfigurarPlano: React.FC = () => {
             })));
           }
 
-          // Mapear materias adicionando um id temporário para o componente
           if (config.materias && config.materias.length > 0) {
             setMaterias(config.materias.map((m, i) => ({
               id: Date.now() + i,
@@ -154,7 +148,6 @@ export const ConfigurarPlano: React.FC = () => {
     setAlertInfo(null);
 
     try {
-      // Salvar a configuração no banco de dados antes de gerar
       await salvarConfiguracao(dados);
 
       const resposta = await fetch(`${API_URL}/cronogramas/gerar`, {
