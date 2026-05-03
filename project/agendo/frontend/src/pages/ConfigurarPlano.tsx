@@ -40,6 +40,7 @@ export const ConfigurarPlano: React.FC = () => {
   // ADIÇÃO: Estados para gerir o carregamento e os alertas
   const [isLoading, setIsLoading] = useState(false);
   const [alertInfo, setAlertInfo] = useState<{ tipo: 'sucesso' | 'erro'; mensagem: string } | null>(null);
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const montarDados = () => {
     const diasNumeros = diasSelecionados
@@ -58,6 +59,31 @@ export const ConfigurarPlano: React.FC = () => {
       turnos: horarios,
       materias: materias
     };
+  };
+
+  const verificarEGerar = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem('@Agendo:token');
+      const resposta = await fetch(`${API_URL}/cronogramas`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (resposta.ok) {
+        const data = await resposta.json();
+        if (data && data.length > 0) {
+          setShowWarningModal(true);
+          setIsLoading(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('Erro ao verificar cronograma existente', e);
+    }
+    enviarDados();
   };
 
   const enviarDados = async () => {
@@ -144,7 +170,7 @@ export const ConfigurarPlano: React.FC = () => {
 
       <div className="flex justify-center">
         <button
-          onClick={enviarDados}
+          onClick={verificarEGerar}
           disabled={isLoading} 
           className={`mt-8 w-full sm:w-auto px-6 py-3 bg-primary text-white rounded-lg transition 
                      ${isLoading ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer active:opacity-50'}`}
@@ -152,6 +178,39 @@ export const ConfigurarPlano: React.FC = () => {
           {isLoading ? 'A gerar cronograma...' : 'Gerar Meu Cronograma'}
         </button>
       </div>
+
+      {showWarningModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-md overflow-hidden transform animate-in zoom-in-95 duration-200 p-6">
+            <div className="flex items-center gap-4 text-red-500 mb-4">
+              <span className="material-symbols-outlined text-4xl">warning</span>
+              <h3 className="text-xl font-black text-slate-900 dark:text-white">Aviso Importante</h3>
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              Você já possui um cronograma gerado. Se você prosseguir, o sistema irá <strong>apagar todos os dados do seu cronograma atual</strong>, incluindo todas as sessões que você já concluiu. 
+              <br/><br/>
+              Tem certeza que deseja continuar?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button 
+                onClick={() => setShowWarningModal(false)}
+                className="px-4 py-2 rounded-lg font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={() => {
+                  setShowWarningModal(false);
+                  enviarDados();
+                }}
+                className="px-4 py-2 rounded-lg font-medium text-white bg-red-500 hover:bg-red-600 transition-colors cursor-pointer"
+              >
+                Sim, desejo continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
