@@ -1,12 +1,32 @@
 import { useState } from "react";
 
 export default function Calendar({
+  dataSelecionada,
   setDataSelecionada,
 }: {
+  dataSelecionada: string;
   setDataSelecionada: (data: string) => void;
 }) {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+
+  // Sincronizar o calendário com a data vinda do localStorage/prop no carregamento inicial
+  useState(() => {
+    if (dataSelecionada && dataSelecionada.includes('/')) {
+      const [d, m, y] = dataSelecionada.split('/').map(Number);
+      setCurrentDate(new Date(y, m - 1, 1));
+    }
+  });
+
+  const getSelectedDayInView = () => {
+    if (!dataSelecionada) return null;
+    const [d, m, y] = dataSelecionada.split('/').map(Number);
+    if (y === currentDate.getFullYear() && m === currentDate.getMonth() + 1) {
+      return d;
+    }
+    return null;
+  };
+
+  const selectedDay = getSelectedDayInView();
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -20,17 +40,14 @@ export default function Calendar({
     const data = new Date(year, month, day);
     const formatted = data.toLocaleDateString("pt-BR");
     setDataSelecionada(formatted);
-    setSelectedDay(day);
   };
 
   const changeMonth = (direction: number) => {
     setCurrentDate(new Date(year, month + direction, 1));
-    setSelectedDay(null);
   };
 
   const formatDate = () => {
-    if (!selectedDay) return "";
-    return new Date(year, month, selectedDay).toLocaleDateString("pt-BR");
+    return dataSelecionada || "";
   };
 
   return (

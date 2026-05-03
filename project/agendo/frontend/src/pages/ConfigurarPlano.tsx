@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom'; // ADIÇÃO: Hook de navegação
+import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import Materias from '../components/Materias';
 import Calendar from '../components/Calender';
@@ -24,15 +24,19 @@ const diaParaNumero: Record<string, number> = {
 };
 
 export const ConfigurarPlano: React.FC = () => {
-  const navigate = useNavigate(); // ADIÇÃO: Instância de navegação
+  const navigate = useNavigate();
 
-  const [dataSelecionada, setDataSelecionada] = useState("");
-  const [materias, setMaterias] = useState([]);
-  const [diasSelecionados, setDiasSelecionados] = useState<string[]>([
+  const configSalva = localStorage.getItem('@Agendo:configPlano');
+  const configInicial = configSalva ? JSON.parse(configSalva) : null;
+
+  const [dataSelecionada, setDataSelecionada] = useState<string>(configInicial?.dataSelecionada || "");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [materias, setMaterias] = useState<any[]>(configInicial?.materias || []);
+  const [diasSelecionados, setDiasSelecionados] = useState<string[]>(configInicial?.diasSelecionados || [
     "Seg", "Ter", "Qua", "Qui", "Sex"
   ]);
 
-  const [horarios, setHorarios] = useState<Horario[]>([
+  const [horarios, setHorarios] = useState<Horario[]>(configInicial?.horarios || [
     { inicio: "08:00", fim: "12:00" },
     { inicio: "14:00", fim: "18:00" }
   ]);
@@ -87,6 +91,14 @@ export const ConfigurarPlano: React.FC = () => {
   };
 
   const enviarDados = async () => {
+    const dadosParaSalvar = {
+      dataSelecionada,
+      materias,
+      diasSelecionados,
+      horarios
+    };
+    localStorage.setItem('@Agendo:configPlano', JSON.stringify(dadosParaSalvar));
+
     const dados = montarDados();
     console.log("JSON FINAL:", JSON.stringify(dados, null, 2));
     setIsLoading(true);
@@ -150,7 +162,7 @@ export const ConfigurarPlano: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
         <div className="w-full">
-          <Calendar setDataSelecionada={setDataSelecionada} />
+          <Calendar dataSelecionada={dataSelecionada} setDataSelecionada={setDataSelecionada} />
         </div>
 
         <div className="w-full">
