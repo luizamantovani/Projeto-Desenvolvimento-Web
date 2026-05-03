@@ -140,7 +140,7 @@ export const Home: React.FC = () => {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-500 dark:text-slate-400">© 2024 Agendo Inc. Todos os direitos reservados.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">© 2026 Agendo. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
