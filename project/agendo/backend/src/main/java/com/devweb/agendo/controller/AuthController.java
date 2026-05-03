@@ -12,6 +12,10 @@ import com.devweb.agendo.repository.SessaoRepository;
 import com.devweb.agendo.repository.UsuarioRepository;
 import com.devweb.agendo.service.EmailService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 //import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 //import org.springframework.http.ResponseCookie;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação", description = "Endpoints para gerenciamento de login e registro de usuários")
 public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
@@ -42,6 +47,13 @@ public class AuthController {
         this.emailService = emailService;
     }
 
+    @Operation(summary = "Realizar login", description = "Autentica o usuário com base no e-mail e senha informados, retornando um token JWT caso as credenciais sejam válidas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login realizado com sucesso. Retorna o token JWT e os dados básicos do usuário."),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida (ex: campos obrigatórios faltando)."),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas (não autorizado)."),
+            @ApiResponse(responseCode = "403", description = "Acesso proibido.")
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(request.email(), request.senha());
@@ -67,6 +79,11 @@ public class AuthController {
 //                .body(new LoginResponse(token));
     }
 
+    @Operation(summary = "Registrar novo usuário", description = "Cria um novo usuário na aplicação e envia um e-mail de boas-vindas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida (ex: campos obrigatórios faltando ou e-mail já em uso).")
+    })
     @PostMapping("/registrar")
     public ResponseEntity<RegistrarUsuarioResponse> registrarUsuario(@Valid @RequestBody RegistroUsuarioRequest request) {
         Usuario novoUsuario = new Usuario();
