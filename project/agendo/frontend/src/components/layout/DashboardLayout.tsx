@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
 interface DashboardLayoutProps {
@@ -18,6 +18,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, prog
 
   const user = localStorage.getItem('@Agendo:user');
   const userName = user ? JSON.parse(user).nome : 'Usuário';
+
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-200">
@@ -95,15 +103,54 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, prog
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
             <input className="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-sm outline-none" placeholder="Pesquisar tarefas, notas ou exames..." type="text" />
           </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-sm font-bold leading-none">{userName}</p>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
+              
+              <div className="relative">
+                <button 
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors focus:outline-none group"
+                >
+                  <div className="text-right hidden sm:block">
+                    <p className="text-sm font-bold leading-none">{userName}</p>
+                  </div>
+                  <div className="size-8 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                    <span className="material-symbols-outlined text-[20px]">person</span>
+                  </div>
+                  <span className={`material-symbols-outlined text-slate-400 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                </button>
+
+                {isMenuOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setIsMenuOpen(false)}
+                    ></div>
+                    <div className="absolute right-0 mt-5 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden z-20 animate-in fade-in zoom-in-95 duration-100 origin-top-right">
+                      <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 sm:hidden">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Usuário</p>
+                        <p className="text-sm font-bold truncate">{userName}</p>
+                      </div>
+                      <button 
+                        className="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-3 transition-colors"
+                        onClick={() => { setIsMenuOpen(false); }}
+                      >
+                        <span className="material-symbols-outlined text-[20px] text-slate-400">account_circle</span>
+                        Ver Perfil
+                      </button>
+                      <button 
+                        className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-3 transition-colors border-t border-slate-100 dark:border-slate-800"
+                        onClick={handleLogout}
+                      >
+                        <span className="material-symbols-outlined text-[20px]">logout</span>
+                        Sair da Conta
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
-          </div>
         </header>
 
         {/* Dynamic Content */}
