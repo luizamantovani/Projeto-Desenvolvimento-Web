@@ -12,7 +12,7 @@ export default function Calendar({
   // Sincronizar o calendário com a data vinda do localStorage/prop no carregamento inicial
   useState(() => {
     if (dataSelecionada && dataSelecionada.includes('/')) {
-      const [d, m, y] = dataSelecionada.split('/').map(Number);
+      const [, m, y] = dataSelecionada.split('/').map(Number);
       setCurrentDate(new Date(y, m - 1, 1));
     }
   });
