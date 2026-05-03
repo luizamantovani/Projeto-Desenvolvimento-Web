@@ -1,9 +1,17 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 
 export const Progresso: React.FC = () => {
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Progresso - Agendo</title>
+        <meta name="description" content="Acompanhe sua evolução acadêmica e metas no Agendo." />
+        <meta property="og:title" content="Progresso - Agendo" />
+        <meta property="og:description" content="Acompanhe sua evolução acadêmica e metas no Agendo." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="mb-8">
         <h1 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight">Acompanhamento de Progresso</h1>
         <p className="text-slate-500 dark:text-slate-400 mt-1">Visualize sua evolução acadêmica e alcance suas metas.</p>

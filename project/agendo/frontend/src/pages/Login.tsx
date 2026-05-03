@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { Botao } from '../components/ui/Botao';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
@@ -45,6 +46,13 @@ export const Login: React.FC = () => {
 
   return (
     <div className="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+      <Helmet>
+        <title>Entrar - Agendo</title>
+        <meta name="description" content="Faça login no Agendo para acessar seu cronograma de estudos." />
+        <meta property="og:title" content="Entrar - Agendo" />
+        <meta property="og:description" content="Faça login no Agendo para acessar seu cronograma de estudos." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
         <div className="flex h-full grow flex-col">
           <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 md:px-10 py-4 bg-white dark:bg-slate-900">

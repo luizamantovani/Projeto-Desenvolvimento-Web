@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -180,11 +181,18 @@ export const Cronograma: React.FC = () => {
         percentual: estatisticas.percentagemGeral
       }}
     >
+      <Helmet>
+        <title>Cronograma - Agendo</title>
+        <meta name="description" content="Gerencie seus blocos de estudo semanais e sessões de foco profundo." />
+        <meta property="og:title" content="Cronograma - Agendo" />
+        <meta property="og:description" content="Gerencie seus blocos de estudo semanais e sessões de foco profundo." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         <div className="flex-1 space-y-6 min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h2>
+              <h1 className="text-2xl font-black tracking-tight">Cronograma de Estudos</h1>
               <p className="text-slate-500 text-sm">Gerencie seus blocos de estudo semanais e sessões de foco profundo.</p>
             </div>
             <div className="flex w-full md:w-auto items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-slate-200 dark:border-slate-700">
@@ -417,6 +425,7 @@ export const Cronograma: React.FC = () => {
                   <p className="text-sm text-slate-500">Informações detalhadas do seu bloco de foco.</p>
                 </div>
                 <button
+                  aria-label="Fechar"
                   onClick={() => setSessaoSelecionada(null)}
                   className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                 >

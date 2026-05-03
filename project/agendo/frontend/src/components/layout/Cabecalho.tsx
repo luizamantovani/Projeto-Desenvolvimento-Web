@@ -19,7 +19,7 @@ export const Cabecalho: React.FC = () => {
         </nav>
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <button className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+          <button aria-label="Configurações" className="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
             <span className="material-symbols-outlined text-[20px]">settings</span>
           </button>
           <div className="bg-slate-200 dark:bg-slate-700 rounded-full size-10 overflow-hidden border-2 border-primary/20 flex items-center justify-center text-slate-500">

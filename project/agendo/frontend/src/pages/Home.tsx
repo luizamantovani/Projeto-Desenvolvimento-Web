@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { Botao } from '../components/ui/Botao';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
@@ -6,6 +7,13 @@ import { ThemeToggle } from '../components/ui/ThemeToggle';
 export const Home: React.FC = () => {
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-200">
+      <Helmet>
+        <title>Agendo - O seu Planejador de Estudos Inteligente</title>
+        <meta name="description" content="Pare de se estressar com o que estudar e quando. O Agendo organiza seu cronograma de estudos." />
+        <meta property="og:title" content="Agendo - O seu Planejador de Estudos Inteligente" />
+        <meta property="og:description" content="Pare de se estressar com o que estudar e quando. O Agendo organiza seu cronograma de estudos." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -29,6 +37,7 @@ export const Home: React.FC = () => {
         </div>
       </header>
 
+      <main>
       <section className="relative pt-20 pb-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
@@ -95,6 +104,7 @@ export const Home: React.FC = () => {
           </Link>
         </div>
       </section>
+      </main>
 
       <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

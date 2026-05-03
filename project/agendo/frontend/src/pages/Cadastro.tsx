@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../components/ui/Input';
 import { Botao } from '../components/ui/Botao';
@@ -61,6 +62,13 @@ export const Cadastro: React.FC = () => {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+      <Helmet>
+        <title>Criar Conta - Agendo</title>
+        <meta name="description" content="Crie sua conta no Agendo e comece a organizar sua jornada de aprendizado." />
+        <meta property="og:title" content="Criar Conta - Agendo" />
+        <meta property="og:description" content="Crie sua conta no Agendo e comece a organizar sua jornada de aprendizado." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="flex h-full grow flex-col">
         <header className="flex items-center justify-between border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-10 py-3 bg-white dark:bg-slate-900">
           <Link to="/" className="flex items-center gap-4">
@@ -71,7 +79,7 @@ export const Cadastro: React.FC = () => {
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <button className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+            <button aria-label="Ajuda" className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
               <span className="material-symbols-outlined">help</span>
             </button>
           </div>
@@ -125,6 +133,7 @@ export const Cadastro: React.FC = () => {
                     required
                   />
                   <button
+                    aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
                     className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                     type="button"
                     onClick={() => setMostrarSenha(!mostrarSenha)}
@@ -148,6 +157,7 @@ export const Cadastro: React.FC = () => {
                     required
                   />
                   <button
+                    aria-label={mostrarConfirmarSenha ? "Ocultar senha" : "Mostrar senha"}
                     className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                     type="button"
                     onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)}
