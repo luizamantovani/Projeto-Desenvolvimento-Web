@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom'; // ADIÇÃO: Hook de navegação
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import Materias from '../components/Materias';
@@ -97,6 +98,13 @@ export const ConfigurarPlano: React.FC = () => {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>Configurar Plano - Agendo</title>
+        <meta name="description" content="Configure seu plano de estudos ideal definindo metas e horários." />
+        <meta property="og:title" content="Configurar Plano - Agendo" />
+        <meta property="og:description" content="Configure seu plano de estudos ideal definindo metas e horários." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       {/* HEADER */}
       <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black">

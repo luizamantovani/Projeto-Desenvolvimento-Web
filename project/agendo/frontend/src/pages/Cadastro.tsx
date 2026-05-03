@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input } from '../components/ui/Input';
 import { Botao } from '../components/ui/Botao';
@@ -61,6 +62,13 @@ export const Cadastro: React.FC = () => {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+      <Helmet>
+        <title>Criar Conta - Agendo</title>
+        <meta name="description" content="Crie sua conta no Agendo e comece a organizar sua jornada de aprendizado." />
+        <meta property="og:title" content="Criar Conta - Agendo" />
+        <meta property="og:description" content="Crie sua conta no Agendo e comece a organizar sua jornada de aprendizado." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="flex h-full grow flex-col">
         <header className="flex items-center justify-between border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-10 py-3 bg-white dark:bg-slate-900">
           <Link to="/" className="flex items-center gap-4">

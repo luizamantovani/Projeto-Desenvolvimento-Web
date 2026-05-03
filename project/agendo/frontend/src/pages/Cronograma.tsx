@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -180,6 +181,13 @@ export const Cronograma: React.FC = () => {
         percentual: estatisticas.percentagemGeral
       }}
     >
+      <Helmet>
+        <title>Cronograma - Agendo</title>
+        <meta name="description" content="Gerencie seus blocos de estudo semanais e sessões de foco profundo." />
+        <meta property="og:title" content="Cronograma - Agendo" />
+        <meta property="og:description" content="Gerencie seus blocos de estudo semanais e sessões de foco profundo." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         <div className="flex-1 space-y-6 min-w-0">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
