@@ -79,7 +79,7 @@ export const Cadastro: React.FC = () => {
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <button className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+            <button aria-label="Ajuda" className="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
               <span className="material-symbols-outlined">help</span>
             </button>
           </div>
@@ -133,6 +133,7 @@ export const Cadastro: React.FC = () => {
                     required
                   />
                   <button
+                    aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
                     className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                     type="button"
                     onClick={() => setMostrarSenha(!mostrarSenha)}
@@ -156,6 +157,7 @@ export const Cadastro: React.FC = () => {
                     required
                   />
                   <button
+                    aria-label={mostrarConfirmarSenha ? "Ocultar senha" : "Mostrar senha"}
                     className="absolute right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                     type="button"
                     onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)}

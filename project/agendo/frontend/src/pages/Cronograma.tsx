@@ -425,6 +425,7 @@ export const Cronograma: React.FC = () => {
                   <p className="text-sm text-slate-500">Informações detalhadas do seu bloco de foco.</p>
                 </div>
                 <button
+                  aria-label="Fechar"
                   onClick={() => setSessaoSelecionada(null)}
                   className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
                 >

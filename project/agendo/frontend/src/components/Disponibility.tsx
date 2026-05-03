@@ -122,6 +122,7 @@ export default function Disponibility({
                   </div>
 
                   <button
+                    aria-label="Remover horário"
                     onClick={() => removerHorario(i)}
                     className="p-2 text-slate-400 hover:text-red-500"
                   >

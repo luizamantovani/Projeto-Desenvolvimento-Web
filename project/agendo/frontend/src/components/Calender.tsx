@@ -38,7 +38,7 @@ export default function Calendar({
 
       {/* HEADER (novo, mas simples e sem mudar estilo geral) */}
       <div className="flex justify-between items-center mb-2">
-        <button onClick={() => changeMonth(-1)} className="cursor-pointer">
+        <button aria-label="Mês anterior" onClick={() => changeMonth(-1)} className="cursor-pointer">
           ◀
         </button>
 
@@ -49,7 +49,7 @@ export default function Calendar({
           })}
         </p>
 
-        <button onClick={() => changeMonth(1)} className="cursor-pointer">
+        <button aria-label="Próximo mês" onClick={() => changeMonth(1)} className="cursor-pointer">
           ▶
         </button>
       </div>
