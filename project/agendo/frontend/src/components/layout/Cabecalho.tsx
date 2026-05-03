@@ -6,10 +6,7 @@ export const Cabecalho: React.FC = () => {
   return (
     <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-6 md:px-10 py-3 sticky top-0 z-50">
       <Link to="/" className="flex items-center gap-4 text-primary">
-        <div className="size-8 flex items-center justify-center bg-primary/10 rounded-lg">
-          <span className="material-symbols-outlined text-primary font-bold">query_stats</span>
-        </div>
-        <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Agendo</h2>
+        <img src="/logo-full.png" alt="Agendo Logo" className="h-8 md:h-10 w-auto object-contain" />
       </Link>
       <div className="flex flex-1 justify-end gap-8 items-center">
         <nav className="hidden md:flex items-center gap-8">
