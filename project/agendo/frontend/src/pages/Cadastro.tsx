@@ -72,10 +72,7 @@ export const Cadastro: React.FC = () => {
       <div className="flex h-full grow flex-col">
         <header className="flex items-center justify-between border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-10 py-3 bg-white dark:bg-slate-900">
           <Link to="/" className="flex items-center gap-4">
-            <div className="size-8 text-primary flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl">auto_stories</span>
-            </div>
-            <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Agendo</h2>
+            <img src="/logo-full.png" alt="Agendo Logo" className="h-8 md:h-10 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
@@ -87,7 +84,8 @@ export const Cadastro: React.FC = () => {
 
         <main className="flex-1 flex items-center justify-center p-4 md:p-8">
           <div className="w-full max-w-120 space-y-8 bg-white dark:bg-slate-900 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 text-center">
+              <img src="/logo-full.png" alt="Agendo Logo" className="max-w-[200px] w-full mx-auto mb-4" />
               <h1 className="text-slate-900 dark:text-white text-3xl font-black leading-tight tracking-tight">Criar Conta</h1>
               <p className="text-slate-500 dark:text-slate-400 text-base">Junte-se ao Agendo para começar a organizar sua jornada de aprendizado hoje mesmo.</p>
             </div>

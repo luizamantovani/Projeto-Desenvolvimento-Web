@@ -56,9 +56,8 @@ export const Login: React.FC = () => {
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
         <div className="flex h-full grow flex-col">
           <header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 md:px-10 py-4 bg-white dark:bg-slate-900">
-            <Link to="/" className="flex items-center gap-3 text-primary">
-              <span className="material-symbols-outlined text-3xl">auto_stories</span>
-              <h2 className="text-xl font-bold">Agendo</h2>
+            <Link to="/" className="flex items-center gap-3">
+              <img src="/logo-full.png" alt="Agendo Logo" className="h-8 md:h-10 w-auto object-contain" />
             </Link>
             <div className="flex items-center gap-4">
               <ThemeToggle />
@@ -81,7 +80,8 @@ export const Login: React.FC = () => {
                 </div>
               </div>
               <div className="p-8 md:p-12 flex flex-col justify-center">
-                <div className="mb-8">
+                <div className="mb-8 text-center">
+                  <img src="/logo-full.png" alt="Agendo Logo" className="max-w-[200px] w-full mx-auto mb-6" />
                   <h2 className="text-3xl font-black mb-2">Bem-vindo de Volta</h2>
                   <p className="text-slate-500 dark:text-slate-400">Faça login para continuar sua jornada</p>
                 </div>
