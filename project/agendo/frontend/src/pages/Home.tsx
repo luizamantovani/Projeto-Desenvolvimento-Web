@@ -18,8 +18,7 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <span className="material-icons text-primary text-3xl">menu_book</span>
-              <span className="font-bold text-xl tracking-tight">Agendo</span>
+              <img src="/logo-full.png" alt="Agendo Logo" className="h-8 md:h-10 w-auto object-contain" />
             </div>
             <nav className="hidden md:flex space-x-8">
               <a className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors font-medium" href="#recursos">Recursos</a>
@@ -111,8 +110,7 @@ export const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-1">
               <div className="flex items-center space-x-2 mb-4">
-                <span className="material-icons text-primary text-2xl">menu_book</span>
-                <span className="font-bold text-lg tracking-tight">Agendo</span>
+                <img src="/logo-full.png" alt="Agendo Logo" className="h-8 md:h-10 w-auto object-contain" />
               </div>
               <p className="text-slate-500 dark:text-slate-400 text-sm">Empoderando estudantes com ferramentas de gestão para melhores notas e menos estresse.</p>
             </div>
