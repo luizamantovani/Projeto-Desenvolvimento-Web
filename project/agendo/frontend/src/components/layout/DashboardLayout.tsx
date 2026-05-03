@@ -17,9 +17,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, prog
   const isActive = (path: string) => location.pathname === path;
 
   const user = localStorage.getItem('@Agendo:user');
-  const userName = user ? JSON.parse(user).nome : 'Usuário';
+  const userData = user ? JSON.parse(user) : null;
+  const userName = userData ? userData.nome : 'Usuário';
 
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = React.useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -134,7 +136,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, prog
                       </div>
                       <button 
                         className="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-3 transition-colors"
-                        onClick={() => { setIsMenuOpen(false); }}
+                        onClick={() => { 
+                          setIsMenuOpen(false);
+                          setIsProfileModalOpen(true);
+                        }}
                       >
                         <span className="material-symbols-outlined text-[20px] text-slate-400">account_circle</span>
                         Ver Perfil
@@ -158,6 +163,42 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, prog
           {children}
         </div>
       </main>
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 z-120 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-sm overflow-hidden transform animate-in zoom-in-95 duration-200">
+            <div className="bg-primary p-6 text-white relative">
+              <button 
+                onClick={() => setIsProfileModalOpen(false)}
+                className="absolute top-4 right-4 hover:bg-white/20 rounded-full p-1 transition-colors cursor-pointer"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+              <div className="size-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white/30">
+                <span className="material-symbols-outlined text-4xl">person</span>
+              </div>
+              <h2 className="text-xl font-bold text-center truncate px-4">{userData?.nome || 'Usuário'}</h2>
+              <p className="text-sm text-white/70 text-center">Perfil do Aluno</p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">E-mail Cadastrado</p>
+                <p className="text-sm font-medium flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm text-primary">mail</span>
+                  {userData?.email || 'Não informado'}
+                </p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button 
+                  onClick={() => setIsProfileModalOpen(false)}
+                  className="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg font-bold text-sm transition-colors cursor-pointer"
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
