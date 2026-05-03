@@ -18,6 +18,10 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
     );
   };
 
+  const removerMateria = (id: any) => {
+    setMaterias((prev: any[]) => prev.filter(m => m.id !== id));
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm h-full">
@@ -36,16 +40,24 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
               className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800"
             >
               <div className="flex flex-col gap-3">
-
-                <input
-                  className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:ring-1 focus:ring-primary"
-                  placeholder="Nome da Matéria"
-                  type="text"
-                  value={mat.nome}
-                  onChange={(e) =>
-                    atualizarMateria(mat.id, "nome", e.target.value)
-                  }
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="Nome da Matéria"
+                    type="text"
+                    value={mat.nome}
+                    onChange={(e) =>
+                      atualizarMateria(mat.id, "nome", e.target.value)
+                    }
+                  />
+                  <button 
+                    onClick={() => removerMateria(mat.id)}
+                    className="text-slate-400 hover:text-red-500 transition-colors cursor-pointer shrink-0"
+                    title="Remover matéria"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">close</span>
+                  </button>
+                </div>
 
                 <div className="flex flex-col gap-2">
                   <p className="text-xs font-semibold uppercase text-slate-500 tracking-wider">

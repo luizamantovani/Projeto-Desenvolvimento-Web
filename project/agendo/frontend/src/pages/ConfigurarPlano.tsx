@@ -143,7 +143,6 @@ export const ConfigurarPlano: React.FC = () => {
         <meta property="og:description" content="Configure seu plano de estudos ideal definindo metas e horários." />
         <meta property="og:type" content="website" />
       </Helmet>
-      {/* HEADER */}
       <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black">
           Configurar Plano de Estudos
@@ -152,7 +151,7 @@ export const ConfigurarPlano: React.FC = () => {
 
       {alertInfo && (
         <div 
-          className={`fixed top-4 left-4 right-4 md:top-20 md:left-auto md:right-6 md:w-auto z-[110] p-4 rounded-xl text-white font-bold shadow-2xl flex items-center gap-3 animate-in slide-in-from-top md:slide-in-from-right duration-300 ${
+          className={`fixed top-4 left-4 right-4 md:top-20 md:left-auto md:right-6 md:w-auto z-110 p-4 rounded-xl text-white font-bold shadow-2xl flex items-center gap-3 animate-in slide-in-from-top md:slide-in-from-right duration-300 ${
             alertInfo.tipo === 'sucesso' ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-red-500 shadow-red-500/20'
           }`}
         >
@@ -195,7 +194,7 @@ export const ConfigurarPlano: React.FC = () => {
       </div>
 
       {showWarningModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-md overflow-hidden transform animate-in zoom-in-95 duration-200 p-6">
             <div className="flex items-center gap-4 text-red-500 mb-4">
               <span className="material-symbols-outlined text-4xl">warning</span>
