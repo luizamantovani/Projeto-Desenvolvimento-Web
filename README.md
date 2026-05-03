@@ -29,57 +29,117 @@ O projeto segue uma arquitetura em camadas com separação clara entre o cliente
 ```
 
 ### 🔹 Frontend
-- Desenvolvido com **React**
+- Desenvolvido com **React + TypeScript**
 - Responsável pela interface do usuário e consumo da API REST
-- Gerenciamento de estado e cache seguro (LocalStorage)
+- **SEO dinâmico** com `react-helmet-async` (meta tags, Open Graph)
+- HTML semântico e acessibilidade (`aria-labels`)
+- Tema claro/escuro
 
 ### 🔹 Backend
 - Desenvolvido com **Spring Boot**
 - Responsável pela lógica de negócio, segurança (Spring Security/JWT) e algoritmo de geração
-- Gerenciamento de versionamento de banco.
+- Documentação interativa da API com **Swagger/OpenAPI 3** (`springdoc-openapi`)
+- Gerenciamento de versionamento de banco com **Flyway**
 
 ### 🔹 Banco de Dados
-- Armazena usuários, matérias e os blocos de sessões de estudo (cronogramas)
+- Armazena usuários, matérias, sessões de estudo (cronogramas) e configurações de cronograma
 
 ---
 
 ## 🗂️ Dicionário de Dados
 
-### 👤 Usuário
+### 👤 Usuário (`usuarios`)
 | Campo        | Tipo      | Descrição            |
 |--------------|-----------|----------------------|
 | id           | Long      | Identificador único  |
 | nome         | String    | Nome do usuário      |
 | email        | String    | Email de login       |
 | senha        | String    | Senha criptografada  |
-| role         | String    | Nivel de acesso      |
 | created_at   | Timestamp | Data de criação      |
+| updated_at   | Timestamp | Data de atualização  |
 
 ---
 
-### 📖 Matéria
+### 📖 Matéria (`materias`)
 | Campo        | Tipo     | Descrição                   |
-|--------------|----------|-----------------------------|
+|--------------|----------|-----------------------------| 
 | id           | Long     | Identificador único         |
 | nome         | String   | Nome da matéria             |
 | dificuldade  | Integer  | Nível de dificuldade (1-10)  |
 | importância  | Integer  | Peso da matéria (1-10)       |
-| cor_hex      | String   | Código hex da cor da tarefa |
+| hex          | String   | Código hex da cor da tarefa |
 | usuario_id   | Long     | Relação com o usuário       |
 
 ---
 
-### 🗓️ Cronograma (Sessão de Estudo)
+### 🗓️ Cronograma / Sessão de Estudo (`sessoes`)
 | Campo        | Tipo     | Descrição                   |
-|--------------|----------|-----------------------------|
+|--------------|----------|-----------------------------| 
 | id           | Long     | Identificador único         |
 | data         | Date     | Data do estudo              |
-| hora_inicio  | Time     | Horário de inicio do bloco  |
+| hora_inicio  | Time     | Horário de início do bloco  |
 | hora_fim     | Time     | Horário de fim do bloco     |
-| status       | Long     | Status da Sessão            |
+| status       | String   | Status da sessão (`PENDENTE` / `CONCLUIDA`) |
 | concluido    | Boolean  | Flag rápida de progresso    |
 | materia_id   | Long     | Matéria associada           |
 | usuario_id   | Long     | Dono do cronograma          |
+
+---
+
+### ⚙️ Configuração do Cronograma (`configuracoes_cronograma`)
+| Campo        | Tipo      | Descrição                                |
+|--------------|-----------|------------------------------------------|
+| id           | Long      | Identificador único                      |
+| data_limite  | Date      | Data limite para conclusão do cronograma |
+| usuario_id   | Long      | Relação 1:1 com o usuário (UNIQUE)       |
+| created_at   | Timestamp | Data de criação                          |
+| updated_at   | Timestamp | Data de atualização                      |
+
+**Tabelas auxiliares (@ElementCollection):**
+
+| Tabela | Campos | Descrição |
+|--------|--------|-----------|
+| `configuracoes_cronograma_dias` | `configuracao_id`, `dia_semana` | Dias da semana disponíveis (1=Seg, 7=Dom) |
+| `configuracoes_cronograma_turnos` | `configuracao_id`, `inicio`, `fim` | Turnos de estudo disponíveis |
+| `configuracoes_cronograma_materias` | `configuracao_id`, `nome`, `dificuldade`, `importancia` | Snapshot das matérias configuradas |
+
+---
+
+## 🔌 Endpoints da API
+
+### 🔑 Autenticação (`/auth`)
+| Método | Endpoint          | Descrição                    | Auth |
+|--------|-------------------|------------------------------|------|
+| POST   | `/auth/login`     | Login com email e senha      | ❌   |
+| POST   | `/auth/registrar` | Cadastro de novo usuário     | ❌   |
+
+### 📅 Cronogramas (`/cronogramas`)
+| Método | Endpoint                       | Descrição                                     | Auth |
+|--------|--------------------------------|-----------------------------------------------|------|
+| GET    | `/cronogramas`                 | Buscar sessões do cronograma do usuário        | ✅   |
+| POST   | `/cronogramas/gerar`           | Gerar novo cronograma com base na configuração | ✅   |
+| PATCH  | `/cronogramas/{id}/concluir`   | Alternar status de conclusão de uma sessão     | ✅   |
+
+### ⚙️ Configuração (`/cronogramas/configuracao`)
+| Método | Endpoint                        | Descrição                                              | Auth |
+|--------|---------------------------------|--------------------------------------------------------|------|
+| POST   | `/cronogramas/configuracao`     | Salvar ou atualizar a configuração do cronograma       | ✅   |
+| GET    | `/cronogramas/configuracao`     | Buscar a última configuração salva do usuário           | ✅   |
+
+> 📖 Documentação interativa disponível em `/swagger-ui.html` quando o backend está rodando.
+
+---
+
+## 🖥️ Páginas do Frontend
+
+| Rota           | Página              | Descrição                                                    |
+|----------------|----------------------|--------------------------------------------------------------|
+| `/`            | Home                 | Landing page pública                                         |
+| `/login`       | Login                | Autenticação de usuário                                      |
+| `/cadastro`    | Cadastro             | Registro de novo usuário                                     |
+| `/progresso`   | Progresso (Dashboard)| Visão geral de progresso e estatísticas                      |
+| `/configurar`  | Configurar Plano     | Definir matérias, turnos, dias e data limite                 |
+| `/cronograma`  | Cronograma           | Visualização do cronograma (dia/semana/mês) com controle de sessões |
 
 ---
 
@@ -89,12 +149,15 @@ O projeto segue uma arquitetura em camadas com separação clara entre o cliente
 - TypeScript
 - React
 - Vite
-- Tailwind CSS 
+- Tailwind CSS
+- react-helmet-async (SEO)
+- react-router-dom
 
 ### 🔙 Backend
 - Java 21
 - Spring Boot 3+
-- Spring Security
+- Spring Security (JWT)
+- springdoc-openapi (Swagger)
 - Flyway
 - Maven
 
@@ -158,7 +221,7 @@ A API estará disponível em `http://localhost:8080`
 
 ---
 
-### 📱 Rodar o Frontend (React Native)
+### 📱 Rodar o Frontend (React)
 
 ```bash
 cd frontend
@@ -213,6 +276,32 @@ docker compose down
 ```
 
 ---
+
+## 📂 Estrutura do Projeto
+
+```
+project/agendo/
+├── backend/
+│   └── src/main/java/com/devweb/agendo/
+│       ├── config/          # Security, JWT, CORS
+│       ├── controller/      # REST Controllers
+│       ├── dto/             # Request/Response DTOs
+│       ├── model/           # Entidades JPA
+│       ├── repository/      # Repositórios Spring Data
+│       └── service/         # Lógica de negócio
+│   └── src/main/resources/
+│       ├── db/migration/    # Migrations Flyway (V1, V2)
+│       └── application.properties
+├── frontend/
+│   └── src/
+│       ├── components/      # Componentes reutilizáveis
+│       ├── pages/           # Páginas da aplicação
+│       ├── service/         # Serviços de API (auth, configuração)
+│       └── types/           # Tipos TypeScript
+```
+
+---
+
 ## 📌 Possíveis Melhorias Futuras
 
 - [ ] Envio de notificações e resumo do cronograma por E-mail.
