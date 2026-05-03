@@ -152,10 +152,13 @@ export const ConfigurarPlano: React.FC = () => {
 
       {alertInfo && (
         <div 
-          className={`p-4 mb-6 rounded-lg text-white font-medium flex items-center justify-center ${
-            alertInfo.tipo === 'sucesso' ? 'bg-emerald-500' : 'bg-red-500'
+          className={`fixed top-4 left-4 right-4 md:top-20 md:left-auto md:right-6 md:w-auto z-[110] p-4 rounded-xl text-white font-bold shadow-2xl flex items-center gap-3 animate-in slide-in-from-top md:slide-in-from-right duration-300 ${
+            alertInfo.tipo === 'sucesso' ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-red-500 shadow-red-500/20'
           }`}
         >
+          <span className="material-symbols-outlined">
+            {alertInfo.tipo === 'sucesso' ? 'check_circle' : 'error'}
+          </span>
           {alertInfo.mensagem}
         </div>
       )}
