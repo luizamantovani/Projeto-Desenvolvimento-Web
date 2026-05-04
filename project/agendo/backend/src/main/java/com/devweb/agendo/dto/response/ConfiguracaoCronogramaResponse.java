@@ -36,6 +36,8 @@ public record ConfiguracaoCronogramaResponse(
             @Schema(description = "Nível de dificuldade", example = "7")
             int dificuldade,
             @Schema(description = "Nível de importância", example = "9")
-            int importancia
+            int importancia,
+            @Schema(description = "Cor hexadecimal da matéria", example = "#3B82F6")
+            String hex
     ) {}
 }

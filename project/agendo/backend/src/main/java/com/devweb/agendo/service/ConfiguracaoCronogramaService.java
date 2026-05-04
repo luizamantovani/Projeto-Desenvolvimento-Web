@@ -10,6 +10,7 @@ import com.devweb.agendo.repository.ConfiguracaoCronogramaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -29,19 +30,19 @@ public class ConfiguracaoCronogramaService {
         config.setUsuario(usuario);
         config.setDataLimite(request.dataLimite());
 
-        config.setDiasSemanaDisponiveis(request.diasSemanaDisponiveis());
+        config.setDiasSemanaDisponiveis(new ArrayList<>(request.diasSemanaDisponiveis()));
 
-        config.setTurnos(
+        config.setTurnos(new ArrayList<>(
                 request.turnos().stream()
                         .map(t -> new TurnoEmbeddable(t.inicio(), t.fim()))
                         .toList()
-        );
+        ));
 
-        config.setMaterias(
+        config.setMaterias(new ArrayList<>(
                 request.materias().stream()
-                        .map(m -> new MateriaEmbeddable(m.nome(), m.dificuldade(), m.importancia()))
+                        .map(m -> new MateriaEmbeddable(m.nome(), m.dificuldade(), m.importancia(), m.hex()))
                         .toList()
-        );
+        ));
 
         return repository.save(config);
     }
@@ -55,7 +56,7 @@ public class ConfiguracaoCronogramaService {
                                 .map(t -> new ConfiguracaoCronogramaResponse.TurnoResponse(t.getInicio(), t.getFim()))
                                 .toList(),
                         config.getMaterias().stream()
-                                .map(m -> new ConfiguracaoCronogramaResponse.MateriaResponse(m.getNome(), m.getDificuldade(), m.getImportancia()))
+                                .map(m -> new ConfiguracaoCronogramaResponse.MateriaResponse(m.getNome(), m.getDificuldade(), m.getImportancia(), m.getHex()))
                                 .toList()
                 ));
     }

@@ -41,6 +41,7 @@ CREATE TABLE configuracoes_cronograma_materias
     nome            VARCHAR(255) NOT NULL,
     dificuldade     INTEGER      NOT NULL CHECK (dificuldade BETWEEN 1 AND 10),
     importancia     INTEGER      NOT NULL CHECK (importancia BETWEEN 1 AND 10),
+    hex             VARCHAR(7)   NOT NULL,
 
     CONSTRAINT fk_materias_configuracao
         FOREIGN KEY (configuracao_id)

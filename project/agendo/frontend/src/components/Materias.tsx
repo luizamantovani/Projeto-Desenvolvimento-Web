@@ -6,7 +6,7 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
   const adicionarMateria = () => {
     setMaterias((prev: any) => [
       ...prev,
-      { id: Date.now(), nome: "", dificuldade: 5, importancia : 5 }
+      { id: Date.now(), nome: "", dificuldade: 5, importancia: 5, hex: "#3B82F6" }
     ]);
   };
 
@@ -41,8 +41,22 @@ export default function Materias({ materias, setMaterias }: { materias: any[]; s
             >
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-2">
+                  <div className="relative shrink-0 cursor-pointer group/color">
+                    <input
+                      type="color"
+                      value={mat.hex || "#3B82F6"}
+                      onChange={(e) =>
+                        atualizarMateria(mat.id, "hex", e.target.value)
+                      }
+                      className="w-9 h-9 rounded-lg border-0 cursor-pointer p-0.5 bg-transparent [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded-md [&::-webkit-color-swatch]:border-0 [&::-moz-color-swatch]:rounded-md [&::-moz-color-swatch]:border-0"
+                      title="Cor da matéria"
+                    />
+                    <span className="material-symbols-outlined absolute -bottom-0.5 -right-0.5 text-[8px] leading-none bg-white dark:bg-slate-800 rounded-full p-px shadow-sm pointer-events-none text-slate-500 group-hover/color:text-primary transition-colors">
+                      edit
+                    </span>
+                  </div>
                   <input
-                    className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:ring-1 focus:ring-primary"
+                    className="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 text-sm outline-none focus:ring-1 focus:ring-primary"
                     placeholder="Nome da Matéria"
                     type="text"
                     value={mat.nome}

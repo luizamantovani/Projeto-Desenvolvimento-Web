@@ -12,4 +12,5 @@ public class MateriaEmbeddable {
     private String nome;
     private int dificuldade;
     private int importancia;
+    private String hex;
 }

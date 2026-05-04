@@ -79,8 +79,7 @@ public class CronogramaController {
             m.setDificuldade(dto.dificuldade());
             m.setImportancia(dto.importancia());
 
-            // Caso tenha implementado a cor HEX no DTO, descomente a linha abaixo:
-            // m.setHex(dto.hex());
+            m.setHex(dto.hex() != null ? dto.hex() : "#3B82F6");
 
             m.setUsuario(usuarioLogado);
             return m;

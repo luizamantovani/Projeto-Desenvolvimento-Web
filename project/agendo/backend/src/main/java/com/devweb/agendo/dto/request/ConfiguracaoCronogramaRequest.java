@@ -54,6 +54,9 @@ public record ConfiguracaoCronogramaRequest(
             @Schema(description = "Nível de importância da matéria (1 a 10)", example = "9")
             @Min(value = 1, message = "A importância mínima é 1.")
             @Max(value = 10, message = "A importância máxima é 10.")
-            Integer importancia
+            Integer importancia,
+
+            @Schema(description = "Cor hexadecimal da matéria", example = "#3B82F6")
+            String hex
     ) {}
 }

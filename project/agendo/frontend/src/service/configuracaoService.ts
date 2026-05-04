@@ -9,6 +9,7 @@ export interface MateriaConfig {
   nome: string;
   dificuldade: number;
   importancia: number;
+  hex: string;
 }
 
 export interface ConfiguracaoCronograma {
