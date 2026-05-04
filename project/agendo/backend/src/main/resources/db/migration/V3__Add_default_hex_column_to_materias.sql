@@ -1,0 +1,2 @@
+ALTER TABLE materias ALTER COLUMN hex SET DEFAULT '#3B82F6';
+UPDATE materias SET hex = '#3B82F6' WHERE hex IS NULL;
