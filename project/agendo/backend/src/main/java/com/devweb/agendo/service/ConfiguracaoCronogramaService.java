@@ -39,7 +39,7 @@ public class ConfiguracaoCronogramaService {
 
         config.setMaterias(
                 request.materias().stream()
-                        .map(m -> new MateriaEmbeddable(m.nome(), m.dificuldade(), m.importancia()))
+                        .map(m -> new MateriaEmbeddable(m.nome(), m.dificuldade(), m.importancia(), m.hex()))
                         .toList()
         );
 
@@ -55,7 +55,7 @@ public class ConfiguracaoCronogramaService {
                                 .map(t -> new ConfiguracaoCronogramaResponse.TurnoResponse(t.getInicio(), t.getFim()))
                                 .toList(),
                         config.getMaterias().stream()
-                                .map(m -> new ConfiguracaoCronogramaResponse.MateriaResponse(m.getNome(), m.getDificuldade(), m.getImportancia()))
+                                .map(m -> new ConfiguracaoCronogramaResponse.MateriaResponse(m.getNome(), m.getDificuldade(), m.getImportancia(), m.getHex()))
                                 .toList()
                 ));
     }
