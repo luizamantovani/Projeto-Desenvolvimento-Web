@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import Materias from '../components/Materias';
 import Calendar from '../components/Calender';
 import Disponibility from '../components/Disponibility';
+import { buscarConfiguracao, salvarConfiguracao } from '../service/configuracaoService';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -23,28 +24,78 @@ const diaParaNumero: Record<string, number> = {
   "Dom": 7
 };
 
+const numeroParaDia: Record<number, string> = {
+  1: "Seg",
+  2: "Ter",
+  3: "Qua",
+  4: "Qui",
+  5: "Sex",
+  6: "Sáb",
+  7: "Dom"
+};
+
 export const ConfigurarPlano: React.FC = () => {
   const navigate = useNavigate();
 
-  const configSalva = localStorage.getItem('@Agendo:configPlano');
-  const configInicial = configSalva ? JSON.parse(configSalva) : null;
-
-  const [dataSelecionada, setDataSelecionada] = useState<string>(configInicial?.dataSelecionada || "");
+  const [dataSelecionada, setDataSelecionada] = useState<string>("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [materias, setMaterias] = useState<any[]>(configInicial?.materias || []);
-  const [diasSelecionados, setDiasSelecionados] = useState<string[]>(configInicial?.diasSelecionados || [
+  const [materias, setMaterias] = useState<any[]>([]);
+  const [diasSelecionados, setDiasSelecionados] = useState<string[]>([
     "Seg", "Ter", "Qua", "Qui", "Sex"
   ]);
 
-  const [horarios, setHorarios] = useState<Horario[]>(configInicial?.horarios || [
+  const [horarios, setHorarios] = useState<Horario[]>([
     { inicio: "08:00", fim: "12:00" },
     { inicio: "14:00", fim: "18:00" }
   ]);
 
-  // ADIÇÃO: Estados para gerir o carregamento e os alertas
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(true);
   const [alertInfo, setAlertInfo] = useState<{ tipo: 'sucesso' | 'erro'; mensagem: string } | null>(null);
   const [showWarningModal, setShowWarningModal] = useState(false);
+
+  useEffect(() => {
+    const carregarConfiguracao = async () => {
+      try {
+        const config = await buscarConfiguracao();
+        if (config) {
+          if (config.dataLimite) {
+            const partes = config.dataLimite.split('-');
+            setDataSelecionada(`${partes[2]}/${partes[1]}/${partes[0]}`);
+          }
+
+          if (config.diasSemanaDisponiveis && config.diasSemanaDisponiveis.length > 0) {
+            const diasLabels = config.diasSemanaDisponiveis
+              .map(num => numeroParaDia[num])
+              .filter(Boolean);
+            setDiasSelecionados(diasLabels);
+          }
+
+          if (config.turnos && config.turnos.length > 0) {
+            setHorarios(config.turnos.map(t => ({
+              inicio: t.inicio.slice(0, 5),
+              fim: t.fim.slice(0, 5)
+            })));
+          }
+
+          if (config.materias && config.materias.length > 0) {
+            setMaterias(config.materias.map((m, i) => ({
+              id: Date.now() + i,
+              nome: m.nome,
+              dificuldade: m.dificuldade,
+              importancia: m.importancia
+            })));
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar configuração salva:', error);
+      } finally {
+        setIsLoadingConfig(false);
+      }
+    };
+
+    carregarConfiguracao();
+  }, []);
 
   const montarDados = () => {
     const diasNumeros = diasSelecionados
@@ -91,20 +142,14 @@ export const ConfigurarPlano: React.FC = () => {
   };
 
   const enviarDados = async () => {
-    const dadosParaSalvar = {
-      dataSelecionada,
-      materias,
-      diasSelecionados,
-      horarios
-    };
-    localStorage.setItem('@Agendo:configPlano', JSON.stringify(dadosParaSalvar));
-
     const dados = montarDados();
     console.log("JSON FINAL:", JSON.stringify(dados, null, 2));
     setIsLoading(true);
     setAlertInfo(null);
 
     try {
+      await salvarConfiguracao(dados);
+
       const resposta = await fetch(`${API_URL}/cronogramas/gerar`, {
         method: 'POST',
         headers: {
@@ -133,6 +178,16 @@ export const ConfigurarPlano: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  if (isLoadingConfig) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <p className="font-medium text-slate-500">Carregando configuração...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
