@@ -83,7 +83,8 @@ export const ConfigurarPlano: React.FC = () => {
               id: Date.now() + i,
               nome: m.nome,
               dificuldade: m.dificuldade,
-              importancia: m.importancia
+              importancia: m.importancia,
+              hex: m.hex || '#3B82F6'
             })));
           }
         }
