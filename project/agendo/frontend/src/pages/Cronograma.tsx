@@ -324,7 +324,7 @@ export const Cronograma: React.FC = () => {
                               <div
                                 key={sessao.id}
                                 className="p-1 rounded text-[10px] font-bold truncate shadow-sm cursor-pointer"
-                                style={{ backgroundColor: `${sessao.materia.hex}1A`, color: sessao.materia.hex, borderLeft: `2px solid ${sessao.materia.hex}` }}
+                                style={{ backgroundColor: `${sessao.materia.hex || '#3B82F6'}1A`, color: sessao.materia.hex || '#3B82F6', borderLeft: `2px solid ${sessao.materia.hex || '#3B82F6'}` }}
                                 onClick={() => setSessaoSelecionada(sessao)}
                               >
                                 {sessao.materia.nome}
