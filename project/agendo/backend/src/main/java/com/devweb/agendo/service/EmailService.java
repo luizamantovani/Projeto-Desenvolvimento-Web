@@ -20,6 +20,9 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String remetente;
 
+    @Value("${app.frontend.url:http://localhost:5173}")
+    private String frontendUrl;
+
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
@@ -49,6 +52,33 @@ public class EmailService {
         } catch (MessagingException e) {
             System.err.println("Falha ao enviar e-mail: " + e.getMessage());
             throw new RuntimeException("Erro ao enviar e-mail", e);
+        }
+    }
+
+    @Async
+    public void sendPasswordRecoveryEmail(String toEmail, String token) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            Context context = new Context();
+            String link = frontendUrl + "/recuperar-senha?token=" + token;
+            context.setVariable("linkRecuperacao", link);
+
+            String htmlTemplate = templateEngine.process("recuperacao-senha", context);
+
+            helper.setFrom(remetente);
+            helper.setTo(toEmail);
+            helper.setSubject("Recuperação de Senha - Agendo");
+            helper.setText(htmlTemplate, true);
+
+            mailSender.send(message);
+
+            System.out.println("Email de recuperação enviado com sucesso para: " + toEmail);
+
+        } catch (MessagingException e) {
+            System.err.println("Falha ao enviar e-mail de recuperação: " + e.getMessage());
+            throw new RuntimeException("Erro ao enviar e-mail de recuperação", e);
         }
     }
 }

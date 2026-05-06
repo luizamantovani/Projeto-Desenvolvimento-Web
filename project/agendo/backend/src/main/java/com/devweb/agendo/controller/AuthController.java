@@ -3,6 +3,11 @@ package com.devweb.agendo.controller;
 import com.devweb.agendo.config.TokenConfig;
 import com.devweb.agendo.dto.request.LoginRequest;
 import com.devweb.agendo.dto.request.RegistroUsuarioRequest;
+import com.devweb.agendo.dto.request.EsqueciSenhaRequest;
+import com.devweb.agendo.dto.request.RedefinirSenhaRequest;
+import com.devweb.agendo.config.JWTUserData;
+import java.util.Optional;
+
 import com.devweb.agendo.dto.response.LoginResponse;
 import com.devweb.agendo.dto.response.RegistrarUsuarioResponse;
 import com.devweb.agendo.dto.response.UsuarioLoginResponse;
@@ -100,5 +105,44 @@ public class AuthController {
         emailService.sendEmail(email);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new RegistrarUsuarioResponse(novoUsuario.getNome(), novoUsuario.getEmail()));
+    }
+
+    @Operation(summary = "Solicitar recuperação de senha", description = "Gera um token de recuperação (mock) e envia um e-mail de recuperação caso o usuário exista.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitação processada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida.")
+    })
+    @PostMapping("/esqueci-senha")
+    public ResponseEntity<String> esqueciSenha(@Valid @RequestBody EsqueciSenhaRequest request) {
+        usuarioRepository.findUserByEmail(request.email()).ifPresent(userDetails -> {
+            Usuario usuario = (Usuario) userDetails;
+            String token = tokenConfig.generateToken(usuario);
+            emailService.sendPasswordRecoveryEmail(usuario.getEmail(), token);
+        });
+        return ResponseEntity.ok("Se o e-mail existir em nossa base de dados, um link de recuperação foi enviado.");
+    }
+
+    @Operation(summary = "Redefinir senha", description = "Redefine a senha do usuário utilizando o token JWT enviado para o e-mail.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Senha redefinida com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Token inválido, expirado ou usuário não encontrado.")
+    })
+    @PostMapping("/redefinir-senha")
+    public ResponseEntity<String> redefinirSenha(@Valid @RequestBody RedefinirSenhaRequest request) {
+        Optional<JWTUserData> userData = tokenConfig.validateToken(request.token());
+        if (userData.isEmpty()) {
+            return ResponseEntity.badRequest().body("Token inválido ou expirado.");
+        }
+        
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(userData.get().usuarioId());
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado.");
+        }
+        
+        Usuario usuario = usuarioOpt.get();
+        usuario.setSenha(passwordEncoder.encode(request.novaSenha()));
+        usuarioRepository.save(usuario);
+        
+        return ResponseEntity.ok("Senha redefinida com sucesso.");
     }
 }

@@ -10,10 +10,13 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Component
 public class TokenConfig {
 
-    private String secret = "minha_chave_secreta_para_assinar_tokens";
+    @Value("${jwt.secret:minha_chave_secreta_para_assinar_tokens}")
+    private String secret;
 
     public String generateToken(Usuario usuario) {
         return JWT.create()

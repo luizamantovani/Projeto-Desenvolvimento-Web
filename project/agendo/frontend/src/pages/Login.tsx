@@ -108,7 +108,7 @@ export const Login: React.FC = () => {
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                       <label className="text-sm font-semibold">Senha</label>
-                      <a className="text-xs font-semibold text-primary hover:underline" href="#">Esqueceu a senha?</a>
+                      <Link className="text-xs font-semibold text-primary hover:underline" to="/esqueci-senha">Esqueceu a senha?</Link>
                     </div>
                     <div className="relative flex items-center">
                       <input
