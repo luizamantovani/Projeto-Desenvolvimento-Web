@@ -7,6 +7,8 @@ import { Progresso } from './pages/Progresso';
 import { ConfigurarPlano } from './pages/ConfigurarPlano';
 import { Cronograma } from './pages/Cronograma';
 import { EsqueciSenha } from './pages/EsqueciSenha';
+import { RecuperarSenha } from './pages/RecuperarSenha';
+
 
 const App: React.FC = () => {
   return (
@@ -19,6 +21,7 @@ const App: React.FC = () => {
         <Route path="/configurar" element={<ConfigurarPlano />} />
         <Route path="/cronograma" element={<Cronograma />} />
         <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+        <Route path="/recuperar-senha" element={<RecuperarSenha />} />
       </Routes>
     </BrowserRouter>
   );

@@ -53,13 +53,12 @@ public class EmailService {
     }
 
     @Async
-    public void sendPasswordRecoveryEmail(String toEmail) {
+    public void sendPasswordRecoveryEmail(String toEmail, String token) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             Context context = new Context();
-            String token = java.util.UUID.randomUUID().toString();
             String link = "http://localhost:5173/recuperar-senha?token=" + token;
             context.setVariable("linkRecuperacao", link);
 
