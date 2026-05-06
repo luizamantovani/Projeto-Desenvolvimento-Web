@@ -210,7 +210,6 @@ export const ConfigurarPlano: React.FC = () => {
 
   const enviarDados = async () => {
     const dados = montarDados();
-    console.log("JSON FINAL:", JSON.stringify(dados, null, 2));
     setIsLoading(true);
     setAlertInfo(null);
 
