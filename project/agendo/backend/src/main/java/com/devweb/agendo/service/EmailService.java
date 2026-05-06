@@ -20,6 +20,9 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String remetente;
 
+    @Value("${app.frontend.url:http://localhost:5173}")
+    private String frontendUrl;
+
     public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
@@ -59,7 +62,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             Context context = new Context();
-            String link = "http://localhost:5173/recuperar-senha?token=" + token;
+            String link = frontendUrl + "/recuperar-senha?token=" + token;
             context.setVariable("linkRecuperacao", link);
 
             String htmlTemplate = templateEngine.process("recuperacao-senha", context);
