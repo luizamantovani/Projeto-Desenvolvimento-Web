@@ -6,6 +6,7 @@ import { Cadastro } from './pages/Cadastro';
 import { Progresso } from './pages/Progresso';
 import { ConfigurarPlano } from './pages/ConfigurarPlano';
 import { Cronograma } from './pages/Cronograma';
+import { EsqueciSenha } from './pages/EsqueciSenha';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         <Route path="/progresso" element={<Progresso />} />
         <Route path="/configurar" element={<ConfigurarPlano />} />
         <Route path="/cronograma" element={<Cronograma />} />
+        <Route path="/esqueci-senha" element={<EsqueciSenha />} />
       </Routes>
     </BrowserRouter>
   );
