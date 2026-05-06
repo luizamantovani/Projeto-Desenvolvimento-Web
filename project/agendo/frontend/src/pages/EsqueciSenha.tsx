@@ -4,12 +4,37 @@ import { Link } from 'react-router-dom';
 import { Botao } from '../components/ui/Botao';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 export const EsqueciSenha: React.FC = () => {
   const [email, setEmail] = useState('');
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // To be implemented
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch(`${API_URL}/auth/esqueci-senha`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao processar solicitação. Tente novamente.');
+      }
+
+      const textResponse = await response.text();
+      setMessage({ type: 'success', text: textResponse || 'Se o e-mail existir em nossa base de dados, um link de recuperação foi enviado.' });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Erro de conexão com o servidor.' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -51,25 +76,36 @@ export const EsqueciSenha: React.FC = () => {
                   <p className="text-slate-500 dark:text-slate-400">Insira seu e-mail para receber as instruções de recuperação.</p>
                 </div>
 
+                {message && (
+                  <div className={`mb-6 p-4 text-sm font-medium ${message.type === 'error' ? 'bg-red-50 border-l-4 border-red-500 text-red-700 animate-pulse' : 'bg-green-50 border-l-4 border-green-500 text-green-700'}`}>
+                    {message.text}
+                  </div>
+                )}
+
                 <form className="space-y-5" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold">Endereço de E-mail</label>
                     <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all"
+                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all disabled:opacity-50"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="estudante@universidade.edu"
                       type="email"
                       required
+                      disabled={isLoading}
                     />
                   </div>
 
-                  <Botao type="submit" className="w-full py-4 h-14">
-                    Enviar Instruções
+                  <Botao type="submit" className="w-full py-4 h-14" disabled={isLoading}>
+                    {isLoading ? (
+                      <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                    ) : (
+                      'Enviar Instruções'
+                    )}
                   </Botao>
                 </form>
 
-                <div className="mt-8 text-center">
+                <div className="mt-8 text-center lg:hidden">
                   <span className="text-sm text-slate-500">Lembrou a senha?</span>
                   <Link className="ml-1 text-sm font-semibold text-primary hover:underline" to="/login">Voltar ao login</Link>
                 </div>
