@@ -145,6 +145,13 @@ export default function Disponibility({
               Adicionar Horário
             </button>
 
+            <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 rounded-lg">
+              <span className="material-symbols-outlined text-blue-500 text-[18px] mt-0.5 shrink-0">info</span>
+              <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed">
+                Cada bloco de estudo tem <strong>1h05min</strong> — sendo <strong>50 minutos</strong> de estudo focado e <strong>15 minutos</strong> de descanso. Certifique-se de que seus turnos comportem ao menos 1 bloco.
+              </p>
+            </div>
+
           </div>
         </div>
       </div>
