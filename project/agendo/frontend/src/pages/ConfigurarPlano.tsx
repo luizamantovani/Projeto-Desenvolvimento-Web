@@ -55,6 +55,13 @@ export const ConfigurarPlano: React.FC = () => {
   const [showWarningModal, setShowWarningModal] = useState(false);
 
   useEffect(() => {
+    if (alertInfo) {
+      const timer = setTimeout(() => setAlertInfo(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertInfo]);
+
+  useEffect(() => {
     const carregarConfiguracao = async () => {
       try {
         const config = await buscarConfiguracao();
@@ -117,7 +124,66 @@ export const ConfigurarPlano: React.FC = () => {
     };
   };
 
+  const validarFormulario = (): string | null => {
+    // 1. Data Limite: deve ser no futuro (pelo menos +1 dia)
+    if (!dataSelecionada) {
+      return 'Selecione uma data limite para o cronograma.';
+    }
+    let dataISO = dataSelecionada;
+    if (dataSelecionada.includes('/')) {
+      const partes = dataSelecionada.split('/');
+      dataISO = `${partes[2]}-${partes[1]}-${partes[0]}`;
+    }
+    const dataLimite = new Date(dataISO + 'T23:59:59');
+    const amanha = new Date();
+    amanha.setDate(amanha.getDate() + 1);
+    amanha.setHours(0, 0, 0, 0);
+    if (dataLimite < amanha) {
+      return 'A data limite deve ser pelo menos 1 dia no futuro.';
+    }
+
+    // 2. Dias: mínimo 1 dia selecionado
+    if (diasSelecionados.length === 0) {
+      return 'Selecione ao menos 1 dia da semana disponível.';
+    }
+
+    // 3. Matérias: mínimo 1 matéria cadastrada
+    if (materias.length === 0) {
+      return 'Adicione ao menos 1 matéria para gerar o cronograma.';
+    }
+    const materiaSemNome = materias.find(m => !m.nome || m.nome.trim() === '');
+    if (materiaSemNome) {
+      return 'Todas as matérias devem ter um nome preenchido.';
+    }
+
+    // 4. Turnos: mínimo 1 turno, e fim > início + 65min
+    if (horarios.length === 0) {
+      return 'Adicione ao menos 1 turno de estudo.';
+    }
+    for (let i = 0; i < horarios.length; i++) {
+      const { inicio, fim } = horarios[i];
+      if (!inicio || !fim) {
+        return `O turno ${i + 1} deve ter horário de início e fim preenchidos.`;
+      }
+      const [hI, mI] = inicio.split(':').map(Number);
+      const [hF, mF] = fim.split(':').map(Number);
+      const minInicio = hI * 60 + mI;
+      const minFim = hF * 60 + mF;
+      if (minFim <= minInicio + 65) {
+        return `O turno ${i + 1} deve ter duração mínima de 65 minutos (Hora Fim > Hora Início + 65 min).`;
+      }
+    }
+
+    return null;
+  };
+
   const verificarEGerar = async () => {
+    const erro = validarFormulario();
+    if (erro) {
+      setAlertInfo({ tipo: 'erro', mensagem: erro });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const token = localStorage.getItem('@Agendo:token');
