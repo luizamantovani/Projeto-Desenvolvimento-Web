@@ -13,6 +13,8 @@ export const RecuperarSenha: React.FC = () => {
 
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
+  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
@@ -113,28 +115,52 @@ export const RecuperarSenha: React.FC = () => {
                 <form className="space-y-5" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold">Nova Senha</label>
-                    <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all disabled:opacity-50"
-                      value={novaSenha}
-                      onChange={(e) => setNovaSenha(e.target.value)}
-                      placeholder="••••••••"
-                      type="password"
-                      required
-                      disabled={isLoading}
-                    />
+                    <div className="relative flex items-center">
+                      <input
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-4 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all disabled:opacity-50"
+                        value={novaSenha}
+                        onChange={(e) => setNovaSenha(e.target.value)}
+                        placeholder="••••••••"
+                        type={mostrarNovaSenha ? "text" : "password"}
+                        required
+                        disabled={isLoading}
+                      />
+                      <button
+                        className="absolute right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                        type="button"
+                        onClick={() => setMostrarNovaSenha(!mostrarNovaSenha)}
+                        aria-label={mostrarNovaSenha ? "Ocultar senha" : "Mostrar senha"}
+                      >
+                        <span className="material-symbols-outlined">
+                          {mostrarNovaSenha ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold">Confirmar Nova Senha</label>
-                    <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all disabled:opacity-50"
-                      value={confirmarSenha}
-                      onChange={(e) => setConfirmarSenha(e.target.value)}
-                      placeholder="••••••••"
-                      type="password"
-                      required
-                      disabled={isLoading}
-                    />
+                    <div className="relative flex items-center">
+                      <input
+                        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-4 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all disabled:opacity-50"
+                        value={confirmarSenha}
+                        onChange={(e) => setConfirmarSenha(e.target.value)}
+                        placeholder="••••••••"
+                        type={mostrarConfirmarSenha ? "text" : "password"}
+                        required
+                        disabled={isLoading}
+                      />
+                      <button
+                        className="absolute right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                        type="button"
+                        onClick={() => setMostrarConfirmarSenha(!mostrarConfirmarSenha)}
+                        aria-label={mostrarConfirmarSenha ? "Ocultar senha" : "Mostrar senha"}
+                      >
+                        <span className="material-symbols-outlined">
+                          {mostrarConfirmarSenha ? 'visibility_off' : 'visibility'}
+                        </span>
+                      </button>
+                    </div>
                   </div>
 
                   <Botao type="submit" className="w-full py-4 h-14" disabled={isLoading || !token}>
