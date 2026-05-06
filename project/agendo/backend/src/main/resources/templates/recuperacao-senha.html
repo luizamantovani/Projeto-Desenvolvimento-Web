@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Recuperação de Senha - Agendo</title>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #faf8ff;
+            font-family: 'Inter', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        table {
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #faf8ff; font-family: 'Inter', Arial, sans-serif; color: #191b24;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #faf8ff; width: 100%;">
+    <tr>
+        <td align="center" style="padding: 20px 10px;">
+
+            <table width="600" cellpadding="0" cellspacing="0" border="0"
+                   style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #e1e1ee; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+
+                <tr>
+                    <td align="center" style="padding: 20px 30px; border-bottom: 1px solid #ededfa;">
+                        <img src="https://raw.githubusercontent.com/luizamantovani/Projeto-Desenvolvimento-Web/refs/heads/main/project/agendo/frontend/public/logo-full.png" alt="Agendo Logo" style="display: block; width: 100%; max-width: 150px; height: auto; margin: 0 auto;">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding: 40px 30px 20px 30px;">
+                        <h1 style="margin: 0 0 15px 0; font-size: 24px; font-weight: 900; color: #191b24;">
+                            Recuperação de Senha - Agendo
+                        </h1>
+                        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #434655;">
+                            Recebemos uma solicitação para redefinir a senha da sua conta no Agendo. Clique no botão abaixo para criar uma nova senha.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="padding: 20px 30px 40px 30px;">
+                        <a th:href="${linkRecuperacao}"
+                           style="display: inline-block; background-color: #0d59f2; color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; font-weight: 700;">
+                            Redefinir Senha
+                        </a>
+                        <p style="margin: 20px 0 0 0; font-size: 13px; color: #737687; line-height: 1.5;">
+                            Se você não solicitou esta alteração, por favor, ignore este e-mail. Sua senha continuará a mesma.
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center" style="background-color: #f3f2ff; padding: 30px; border-top: 1px solid #e1e1ee;">
+                        <img src="https://raw.githubusercontent.com/luizamantovani/Projeto-Desenvolvimento-Web/refs/heads/main/project/agendo/frontend/public/logo-full.png" alt="Agendo Logo" style="display: block; width: 100%; max-width: 100px; height: auto; margin: 0 auto 10px auto; filter: grayscale(100%) opacity(50%);">
+                        <p style="margin: 0; font-size: 11px; color: #737687; line-height: 1.5;">
+                            © 2026 Agendo. Organização acadêmica de alta performance.<br>
+                            Este é um e-mail automático, por favor, não responda.
+                        </p>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
