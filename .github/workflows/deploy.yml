@@ -1,0 +1,26 @@
+name: Deploy Agendo para Oracle Cloud
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Conectar na VM e fazer o Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST_IP }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+          script: |
+            cd /home/ubuntu/projects/facens/agendo
+            
+            git pull origin main
+            
+            docker-compose down
+            docker-compose up -d --build
