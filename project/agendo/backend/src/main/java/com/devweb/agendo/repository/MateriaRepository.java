@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MateriaRepository extends JpaRepository<Materia, Long> {
     List<Materia> findByUsuarioId(Long usuarioId);
+    Materia findByUsuarioIdAndNome(Long usuarioId, String nome);
 }
