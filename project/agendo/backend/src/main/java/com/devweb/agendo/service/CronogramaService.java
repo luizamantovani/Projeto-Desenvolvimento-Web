@@ -47,7 +47,7 @@ public class CronogramaService {
 
         List<Sessao> sessoesGeradas = new ArrayList<>();
 
-        sessaoRepository.deleteByUsuarioIdAndDataAfter(usuario.getId(), LocalDate.now().minusDays(1));
+        sessaoRepository.deleteByUsuarioIdAndDataAfter(usuario.getId(), LocalDate.now().minusDays(0));
 
         materias.forEach(m -> m.setUsuario(usuario));
         List<Materia> materiasSalvas = materiaRepository.saveAll(materias);
