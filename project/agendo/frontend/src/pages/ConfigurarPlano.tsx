@@ -322,7 +322,7 @@ export const ConfigurarPlano: React.FC = () => {
               <h3 className="text-xl font-black text-slate-900 dark:text-white">Aviso Importante</h3>
             </div>
             <p className="text-slate-600 dark:text-slate-400 mb-6">
-              Você já possui um cronograma gerado. Se você prosseguir, o sistema irá <strong>apagar todos os dados do seu cronograma atual</strong>, incluindo todas as sessões que você já concluiu. 
+              Você já possui um cronograma gerado. Se você prosseguir, o sistema irá <strong>editar as sessões de hoje em diante</strong>. 
               <br/><br/>
               Tem certeza que deseja continuar?
             </p>
