@@ -114,30 +114,30 @@ export const Home: React.FC = () => {
               </div>
               <p className="text-slate-500 dark:text-slate-400 text-sm">Empoderando estudantes com ferramentas de gestão para melhores notas e menos estresse.</p>
             </div>
-            <div>
+            {/* <div>
               <h4 className="font-semibold mb-4 text-slate-900 dark:text-white">Produto</h4>
               <ul className="space-y-2 text-sm text-slate-500 dark:text-slate-400">
                 <li><a className="hover:text-primary transition-colors" href="#">Recursos</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Preços</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Casos de Uso</a></li>
               </ul>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <h4 className="font-semibold mb-4 text-slate-900 dark:text-white">Recursos</h4>
               <ul className="space-y-2 text-sm text-slate-500 dark:text-slate-400">
                 <li><a className="hover:text-primary transition-colors" href="#">Blog</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Dicas de Estudo</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Central de Ajuda</a></li>
               </ul>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <h4 className="font-semibold mb-4 text-slate-900 dark:text-white">Empresa</h4>
               <ul className="space-y-2 text-sm text-slate-500 dark:text-slate-400">
                 <li><a className="hover:text-primary transition-colors" href="#">Sobre Nós</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Contato</a></li>
                 <li><a className="hover:text-primary transition-colors" href="#">Privacidade</a></li>
               </ul>
-            </div>
+            </div> */}
           </div>
           <div className="pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-slate-500 dark:text-slate-400">© 2026 Agendo. Todos os direitos reservados.</p>
