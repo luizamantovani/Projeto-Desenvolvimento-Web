@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Botao } from '../components/ui/Botao';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { loginUsuario } from '../service/authService';
+import { useEffect } from 'react';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,13 @@ export const Login: React.FC = () => {
     email: '',
     senha: ''
   });
+
+  useEffect(() => {
+    const user = localStorage.getItem('@Agendo:user');
+    if (user) {
+      navigate('/cronograma');
+    }
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +89,7 @@ export const Login: React.FC = () => {
               </div>
               <div className="p-8 md:p-12 flex flex-col justify-center">
                 <div className="mb-8 text-center">
-                  <img src="/logo-full.png" alt="Agendo Logo" className="max-w-[200px] w-full mx-auto mb-6" />
+                  <img src="/logo-full.png" alt="Agendo Logo" className="max-w-50 w-full mx-auto mb-6" />
                   <h2 className="text-3xl font-black mb-2">Bem-vindo de Volta</h2>
                   <p className="text-slate-500 dark:text-slate-400">Faça login para continuar sua jornada</p>
                 </div>

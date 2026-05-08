@@ -34,14 +34,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, prog
       {/* Sidebar */}
       <aside className="w-20 md:w-64 flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark/50 transition-all duration-300">
         <div className="p-6 flex items-center gap-3">
-          <Link to="/" className="flex items-center gap-3 text-primary">
+          <div className="flex items-center gap-3 text-primary cursor-default select-none">
             <div className="bg-primary rounded-lg p-2 text-white">
               <span className="material-symbols-outlined block">auto_stories</span>
             </div>
             <h1 className="hidden md:block text-xl font-bold tracking-tight text-slate-900 dark:text-white">
               Agendo
-            </h1>         
-          </Link>
+            </h1>
+          </div>
         </div>
         <nav className="flex-1 px-2 md:px-4 space-y-2">
           {/* <Link

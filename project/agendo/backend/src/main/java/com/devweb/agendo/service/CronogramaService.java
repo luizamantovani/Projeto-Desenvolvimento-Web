@@ -47,10 +47,26 @@ public class CronogramaService {
 
         List<Sessao> sessoesGeradas = new ArrayList<>();
 
-        sessaoRepository.deleteByUsuarioIdAndDataAfter(usuario.getId(), LocalDate.now().minusDays(1));
 
-        materias.forEach(m -> m.setUsuario(usuario));
-        List<Materia> materiasSalvas = materiaRepository.saveAll(materias);
+        sessaoRepository.deleteByUsuarioIdAndDataAfter(usuario.getId(), LocalDate.now().minusDays(0));
+
+        List<Materia> materiasParaSalvar = new ArrayList<>();
+        for (Materia materia : materias) {
+            materia.setUsuario(usuario);
+
+            Materia materiaExistente = materiaRepository.findByUsuarioIdAndNome(usuario.getId(), materia.getNome());
+            if (materiaExistente != null) {
+                materiaExistente.setNome(materia.getNome());
+                materiaExistente.setDificuldade(materia.getDificuldade());
+                materiaExistente.setImportancia(materia.getImportancia());
+                materiaExistente.setHex(materia.getHex());
+                materiasParaSalvar.add(materiaExistente);
+            } else {
+                materiasParaSalvar.add(materia);
+            }
+        }
+
+        List<Materia> materiasSalvas = materiaRepository.saveAll(materiasParaSalvar);
 
         // Calcula a lista de dias úteis com base na Data Limite e nos dias marcados
         List<LocalDate> datasCalculadas = calcularDatasNoIntervalo(
