@@ -187,6 +187,21 @@ export const Cronograma: React.FC = () => {
   const tarefasDeHoje = sessoes.filter(sessao => sessao.data === hojeString);
   const sessoesPendentes = tarefasDeHoje.filter(s => !s.concluido).length;
 
+  const progressoPorMateria = React.useMemo(() => {
+    const mapa = new Map<number, { materia: Materia; total: number; concluidas: number }>();
+    sessoes.forEach(sessao => {
+      const entrada = mapa.get(sessao.materia.id) ?? { materia: sessao.materia, total: 0, concluidas: 0 };
+      entrada.total += 1;
+      if (sessao.status === 'CONCLUIDA') entrada.concluidas += 1;
+      mapa.set(sessao.materia.id, entrada);
+    });
+    return Array.from(mapa.values()).sort((a, b) => {
+      const pctA = a.total > 0 ? a.concluidas / a.total : 0;
+      const pctB = b.total > 0 ? b.concluidas / b.total : 0;
+      return pctB - pctA;
+    });
+  }, [sessoes]);
+
   const estatisticas = React.useMemo(() => {
     const totalSessoes = sessoes.length;
     const concluidas = sessoes.filter(s => s.status === 'CONCLUIDA').length;
@@ -471,6 +486,43 @@ export const Cronograma: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {progressoPorMateria.length > 0 && (
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="material-symbols-outlined text-[20px] text-primary">bar_chart</span>
+                <h3 className="font-bold text-lg">Progresso das Matérias</h3>
+              </div>
+              <ul className="space-y-3">
+                {progressoPorMateria.map(({ materia, total, concluidas }) => {
+                  const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+                  return (
+                    <li key={materia.id}>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: materia.hex || '#3b82f6' }}
+                          />
+                          <span className="text-xs font-semibold truncate text-slate-700 dark:text-slate-200">{materia.nome}</span>
+                        </div>
+                        <span className="text-xs font-bold ml-2 shrink-0" style={{ color: materia.hex || '#3b82f6' }}>
+                          {concluidas}/{total}
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className="h-1.5 rounded-full transition-all duration-500"
+                          style={{ width: `${pct}%`, backgroundColor: materia.hex || '#3b82f6' }}
+                        />
+                      </div>
+                      <p className="text-[10px] text-slate-400 mt-0.5 text-right">{pct}% concluído</p>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
 
